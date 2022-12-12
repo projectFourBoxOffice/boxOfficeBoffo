@@ -59,14 +59,31 @@ import DisplayMovies from './DisplayMovies.js';
 import './App.css';
 
 function App() {
-
+  // state for the user input from the search bar (set to empty string by default)
   const [userSearch, setUserSearch] = useState("");
+  // state for when the user has submitted the search form (default value false)
   const [searchSubmit, setSearchSubmit] = useState(false);
   // setting the default value of our movie state to an empty array since the necessaray data from our API for our movies   is inside an array of objects called results (the results array is inside our data object, along with the properties total_pages, page and total_results)
-  const [movies, setMovies] = useState([]);
   // data from API that gets passed as props to DisplayMovies component 
-  
-  const [userLength, setUserLength] = useState(0);
+  // will get values of the results array from our object
+  const [movies, setMovies] = useState([]);
+  // will get the our new array (copied results array) with new month, day_of_month and year properties to use as filtering conditions
+  // const [allMovies, setAllMovies] = useState([]);
+  // state for the filtered movies array, to only show movies released between May 1st and Sept 4 (inclusive), and possibly only movies with the original language equal to English (in order to avoid possible mishaps with the include_adult param)
+  const [filteredMovies, setFilteredMovies] = useState([]);
+  // state for 
+  const [allFilteredMovies, setAllFilteredMovies] = useState([]);
+
+  // year state to use for later so that the user knows what year he searched for the summer movies (since user input gets cleared after each submission, needed to find a different alternative to display it onto the page when the user has already submitted), gets value inside the filtering of the copy of the all movies array since if it were done during the mapping of the all movies array, it wouldn't have a value yet (can't do it after the return statement)
+  const [movieYear, setMovieYear] = useState("");
+
+
+  // let variables to use for the while loop
+  // counter for page param, default value 0 (gets increased in the while loop)
+  let counter = 0;
+
+  // define an array (empty at first) to then later store the copy of the filtered array inside the while loop (avoid direct mutation), also will hold the values from the results of multiples pages (if necessary)
+  let allFilteredArray = [];
 
   // async function getMovies to make the API call (calling that function in the submit handler)
   const getMovies = async () => {
@@ -74,64 +91,132 @@ function App() {
    
     const url = new URL('https://api.themoviedb.org/3/discover/movie');
     
-    // Search PARAMS
+    // while loop to keep searching for results that match our filtered array, so that we get at least 10 summer movies for the user to add to his prediction list and sort later on
+    while (true) {
+      
+      console.log(allFilteredArray);
+      // increase the value of the counter variable by one each time a new API call is made (use that for the page param inside the search params)
+      counter = counter + 1;
+      console.log(counter);
+      
+      // Search PARAMS
       url.search = new URLSearchParams({
-      api_key: 'b236a86e23557d3a2afde767ae0ab5db',
-      // setting the release year equal to the user search input allows us to only show movies that match the release year that the user searched for 
-      primary_release_year: userSearch,
-      include_adult: false,
-      include_video: false,
-      // might use that later to compare highest revenue with user guess 
-      // sort_by: 'revenue.desc',
-      language: 'en-US',
-      page: 1
-      // no need for query property since that would be restricted to input type=text, which we don't want in our case
-    })
+        api_key: 'b236a86e23557d3a2afde767ae0ab5db',
+        // setting the release year equal to the user search input allows us to only show movies that match the release year that the user searched for 
+        primary_release_year: userSearch,
+        include_adult: false,
+        include_video: false,
+        // might use that later to compare highest revenue with user guess 
+        // sort_by: 'revenue.desc',
+        language: 'en-US',
+        // giving the page param the value of the counter variable (value is 1 as long as there are at least 10 filtered movie items on that page, while that's not the case, keep counting until there is at least 10, so could go up to page 2 or 3)
+        page: counter
+        // no need for query property since that would be restricted to input type=text, which we don't want in our case
+      })
     
-    
-    const response = await fetch(url);
-    console.log(response);
+      // our response and data objects
+      const response = await fetch(url);
+      // console.log(response);
+      const data = await response.json();
+      // console.log(data);
 
-    const data = await response.json();
-    console.log(data);
+      // in order to get the relevant data for the movie info and posters, we need to access the results array inside the data object
+      const movieResults = data.results;
+      console.log(movieResults);
 
-    // in order to get the relevant data for the movie info and posters, we need to access the results array inside the data object
-    const movieResults = data.results;
-    console.log(movieResults);
+      // store that results array into the movies state
+      setMovies(movieResults);
+      // console.log(movies);
 
-    setMovies(movieResults);
-    console.log(movies);
+      // need to filter by month (getMonth()) and day of the month (use the getDate() method for that)
+      // https://www.w3schools.com/jsref/jsref_getdate.asp
 
-    // need to filter by month (getMonth()) and day of the month (use the getDate() method for that)
-    // https://www.w3schools.com/jsref/jsref_getdate.asp
+      // need to add in a month property to our movies array (mapping), so that we can then filter out the movies that don't fall between May (value of 4) and September (value of 8) with the .filter method (since our data comes in a array of objects)
+      const moviesWithMonthDay = data.results.map((movie) => {
+        const d = new Date(movie.release_date);
+        let month = d.getMonth();
+        let dayOfMonth = d.getDate();
+        // year to then display it later on to the user after he has submitted the search form (can't use userSearch since the input is getting cleared upon each submission)
+        let year = d.getFullYear();
+        // adding in the newly created properties into our array of objects
+        return {...movie, month: month, day_of_month: dayOfMonth, year: year};
+        
+      })
+      console.log(moviesWithMonthDay);
 
-    // need to add in a month property to our movies array (mapping), so that we can then filter out the movies that don't fall between May (value of 4) and September (value of 8) with the .filter method (since our data comes in a array of objects)
-    
-    // for filter: conditions that need to pass in our results array in order to display movies: only released between May 1st and September 4th ((inclusive, so that means: month values greater than or equal to 4 and less than or equal to 8), and date value for the month of september (8) less than or equal to 3)
-    // use filter for that
+      // put that array into our movies state in order to be able to access it in our JSX
+      // setAllMovies(moviesWithMonthDay);
+      // console.log(allMovies);
+      
+      // for filter: conditions that need to pass in our results array in order to display movies: only released between May 1st and September 4th ((inclusive, so that means: month values greater than or equal to 4 and less than or equal to 8), and date value for the month of september (8) less than or equal to 3)
+      // use filter for that
 
-    // Future:
-    // another problem we might have to tackle: the API only lets us only use 1 page with a maximum of 20 results per page and if fe want to use another page we have to make another fetch call, problematic since with our filtering there are gonna be less movies that are gonna match our conditions (not that they don't exist, they just aren't on that particular page, have to specify that in the search params, also: how do we know which page would have at least 10 movies that match our conditions?)
+      // copying the newly created array that now contains the month and day_of_month property
+      const copyAllMovies = [...moviesWithMonthDay];
+
+      // filtering through our copy of the array (avoiding direct mutation)
+      const filteredMovieItems = copyAllMovies.filter((movie) => {
+        // setting the movie year state with the value of the newly added year property from our moviesWithMonthDay array copy
+        setMovieYear(movie.year);
+
+        // if the month is september, only show the days of that month less than or equal to 4th (so 3, since there are only 30 days in September, so the number is less by one)
+        if (movie.month === 8) {
+          // decided to only return movies in English (original language English since otherwise the API doesn't always know if there is adult movies included in other languages (doesn't understand))
+          return movie.day_of_month <= 3 && movie.month  >= 4 && movie.month <=8 && movie.original_language === "en";
+        }
+        else {
+          return movie.month  >= 4 && movie.month <=8 && movie.original_language === "en";
+        }
+        
+      })
+      console.log(filteredMovieItems);
+      // set the filtered movies state equal to the filtered array
+      setFilteredMovies(filteredMovieItems);
+      // console.log(filteredMovies);
+
+      // pushing the copy of the filtered movie items array into our new array (so that it keeps adding new values every time the array length is less than 10)
+      allFilteredArray.push(...filteredMovieItems);
+      console.log(allFilteredArray);
+
+      // putting that newly populated all filtered array into a state to then use in our return in the display movies component (so that not just the filtered movies get shown from the first page, but from all pages necessary in order to have at least 10)
+      setAllFilteredMovies(allFilteredArray);
+      // console.log(allFilteredMovies);
+
+      // another problem to tackle: the API only lets us only use 1 page with a maximum of 20 results per page and if fe want to use another page we have to make another fetch call, problematic since with our filtering there are gonna be less movies that are gonna match our conditions (not that they don't exist, they just aren't on that particular page, have to specify that in the search params, also: how do we know which page would have at least 10 movies that match our conditions?)
+      // solution: add a while loop that keeps calling the API to get results from more pages as long as the length of the all filtered array is less than 10 (for that define a counter let variable before the while loop that is set to 0, then inside the while loop before the search params gets increased by one, then set the page param equal to that counter value, so that results get shown from more than one page when there is not enough (less than 10) on the first page)
+
+      // if the length of our array that contains all filtered array values is greater than or equal to 10, break the while loop (since we only want to keep adding new results to our page/API call when there is less than 10 movies available on a page, default page is 1, but this page doesn't always have enough movies that match our filtering conditions, user needs to have at least 10 movies for the prediction list)
+      if (allFilteredArray.length >= 10) {
+        break;
+      }
+
+    }
+    // end of while loop
+
+    // set counter back to default value 0 after while loop is done
+    counter = 0;
+    console.log(counter);
   }
 
   // submit handler for search form
   const handleSearchSubmit = (event) => {
     event.preventDefault();
     // calling the async function getMovies with the API call, so that movies only show up once the user searches for a year
-    getMovies();
-    
+    getMovies(); 
     // setting userSubmit to true since the user is submitting the form (using that as a condition later in the return/JSX)
-    
     setSearchSubmit(true);
-  
+    // clearing the userSearch value, so that search bar gets cleared after each submission
+    // maybe better not to clear the user input after submission sicne the user can use the arrows in the input to go up or down a year from the previous search input (more convenient possibly)
+    // setUserSearch("");
+
+    // setting the all filtered movies array back to an empty array, so that same movies won't be shown again for next search
+    setAllFilteredMovies([]);
       
   }
 
   // handles input change, setting the userSearch state equal to the value of the targeted input
   const handleSearchInput = (event) => {
     setUserSearch(event.target.value);
-    setUserLength(userSearch.length);
-    // setSearchSubmit(false);
   }
   
 
@@ -145,6 +230,8 @@ function App() {
         handleSearchSubmit={handleSearchSubmit}
         handleSearchInput={handleSearchInput}
         userSearch={userSearch}
+        movieYear={movieYear}
+        searchSubmit={searchSubmit}
       />
       {/* <form onSubmit={handleSubmit}>
         <label htmlFor="userSearch">Search a year</label>
@@ -163,6 +250,8 @@ function App() {
         searchSubmit ?
         <DisplayMovies 
           movies={movies}
+          filteredMovies={filteredMovies}
+          allFilteredMovies={allFilteredMovies}
         />
         : null
       }

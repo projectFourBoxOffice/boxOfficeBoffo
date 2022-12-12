@@ -3,14 +3,14 @@
 import MoviePlaceholder from './movie_default.png';
 
 // passing in the value stored in the movies state as a prop and destructuring it
-const DisplayMovies = ({movies}) => {
+const DisplayMovies = ({allFilteredMovies}) => {
 
     return(
         <section className='movieResults'>
-            <p>Total results: {movies.length}</p>
+            <p>Total results: {allFilteredMovies.length}</p>
             <ul>
                 {/* mapping through our movies state array (containing all of our relevant movie info and data) */}
-                {movies.map((movie) => {
+                {allFilteredMovies.map((movie) => {
                     return(
                         <li key={movie.id}>
                             {
