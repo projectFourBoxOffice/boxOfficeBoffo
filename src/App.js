@@ -51,10 +51,15 @@
 
 // App.js
 
+// importing firebase
+import app from './firebase.js';
+import { getDatabase, ref, onValue, push, remove } from 'firebase/database';
+
 import { useState } from 'react';
 // importing components
 import SearchForm from './SearchForm.js';
 import DisplayMovies from './DisplayMovies.js';
+
 
 import './App.css';
 
