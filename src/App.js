@@ -52,8 +52,8 @@
 // App.js
 
 // importing firebase
-import app from './firebase.js';
-import { getDatabase, ref, onValue, push, remove } from 'firebase/database';
+// import app from './firebase.js';
+// import { getDatabase, ref, onValue, push, remove } from 'firebase/database';
 
 import { useState } from 'react';
 // importing components
@@ -191,7 +191,7 @@ function App() {
       // solution: add a while loop that keeps calling the API to get results from more pages as long as the length of the all filtered array is less than 10 (for that define a counter let variable before the while loop that is set to 0, then inside the while loop before the search params gets increased by one, then set the page param equal to that counter value, so that results get shown from more than one page when there is not enough (less than 10) on the first page)
 
       // if the length of our array that contains all filtered array values is greater than or equal to 10, break the while loop (since we only want to keep adding new results to our page/API call when there is less than 10 movies available on a page, default page is 1, but this page doesn't always have enough movies that match our filtering conditions, user needs to have at least 10 movies for the prediction list)
-      if (allFilteredArray.length >= 10) {
+      if (allFilteredArray.length >= 20) {
         break;
       }
 
