@@ -214,7 +214,7 @@ function App() {
     console.log(counter);
   }
 
-  useEffect(() => {
+  useEffect((userMovie) => {
     const database = getDatabase(firebase);
     const dbRef = ref(database);
     
@@ -222,8 +222,8 @@ function App() {
       const data = response.val();
       const newState = [];
 
-      for(let selectedMovies in data){
-        newState.push(data[selectedMovies]);
+      for(let key in data){
+        newState.push({key: key , name: data[key]});
       }
       setUserMovies(newState);
       console.log(userMovies);
@@ -334,8 +334,8 @@ function App() {
         <ul>
           {userMovies.map((userMovie) => {
             return(
-              <li>
-                <p>{userMovie.original_title}</p>
+              <li key={userMovie.key}>
+                <p>{userMovie.name}</p>
               </li>
             )
           })}
