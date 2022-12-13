@@ -92,6 +92,10 @@ function App() {
 
   const [ clicked, setClicked] = useState(false);
 
+  const [listSubmit, setListSubmit] = useState(false);
+
+  
+
   // let variables to use for the while loop
   // counter for page param, default value 0 (gets increased in the while loop)
   let counter = 0;
@@ -243,6 +247,7 @@ function App() {
 
     // setting the all filtered movies array back to an empty array, so that same movies won't be shown again for next search
     setAllFilteredMovies([]);
+    
       
   }
 
@@ -255,6 +260,7 @@ function App() {
     const database = getDatabase(firebase);
     const dbRef = ref(database);
     let userMovie = e.target.value;
+    
 
     console.log(e.target.value);
 
@@ -263,7 +269,15 @@ function App() {
     // }
     push(dbRef, `${userMovie}`);
     setClicked(true);
+    setSearchSubmit(true);
+    setListSubmit(false);
   }
+  const handleListSubmit = () => {
+    // event.preventDefault();
+    setListSubmit(true);
+    setSearchSubmit(false);
+  }
+
 
   return (
     <div className="App">
@@ -330,17 +344,35 @@ function App() {
       : null
       } */}
       {
-        clicked ?
+        clicked && listSubmit === false && searchSubmit ? 
+       <>
         <ul>
           {userMovies.map((userMovie) => {
             return(
               <li key={userMovie.key}>
+                <select name="selectedList" id="selectedList" required>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                </select>
                 <p>{userMovie.name}</p>
               </li>
             )
           })}
         </ul>
-        : null
+        <button onClick={handleListSubmit} type="submit">Submit</button>
+      </>
+      
+        : listSubmit && searchSubmit === false ? 
+          <p>Your List Has Been Submitted</p>
+          : null
       }
     </div>
   );
