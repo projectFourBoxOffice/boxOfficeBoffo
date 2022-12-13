@@ -90,6 +90,7 @@ function App() {
 
   const [ userMovies, setUserMovies] = useState([]);
 
+  const [ clicked, setClicked] = useState(false);
 
   // let variables to use for the while loop
   // counter for page param, default value 0 (gets increased in the while loop)
@@ -261,6 +262,7 @@ function App() {
       // setUserMovie(e.target.value);
     // }
     push(dbRef, `${userMovie}`);
+    setClicked(true);
   }
 
   return (
@@ -327,7 +329,19 @@ function App() {
       </ul>
       : null
       } */}
-      
+      {
+        clicked ?
+        <ul>
+          {userMovies.map((userMovie) => {
+            return(
+              <li>
+                <p>{userMovie.original_title}</p>
+              </li>
+            )
+          })}
+        </ul>
+        : null
+      }
     </div>
   );
 }

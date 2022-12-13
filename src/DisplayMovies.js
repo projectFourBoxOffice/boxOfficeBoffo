@@ -24,7 +24,7 @@ const DisplayMovies = ({allFilteredMovies, handleClick}) => {
                             {/* making sure the release date of the displayed movie results match the year of the user input */}
                             <p>{movie.release_date}</p>
                             <button
-                                value={movie.id}
+                                value={movie.original_title}
                                 onClick={handleClick}
                             >+</button>
                         </li>
