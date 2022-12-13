@@ -3,7 +3,7 @@
 import MoviePlaceholder from './movie_default.png';
 
 // passing in the value stored in the movies state as a prop and destructuring it
-const DisplayMovies = ({allFilteredMovies}) => {
+const DisplayMovies = ({allFilteredMovies, handleClick}) => {
 
     return(
         <section className='movieResults'>
@@ -23,6 +23,10 @@ const DisplayMovies = ({allFilteredMovies}) => {
                             <p>{movie.original_title}</p>
                             {/* making sure the release date of the displayed movie results match the year of the user input */}
                             <p>{movie.release_date}</p>
+                            <button
+                                value={movie.id}
+                                onClick={handleClick}
+                            >+</button>
                         </li>
                     )
                 })}

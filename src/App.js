@@ -52,10 +52,11 @@
 // App.js
 
 // importing firebase
-// import app from './firebase.js';
-// import { getDatabase, ref, onValue, push, remove } from 'firebase/database';
+import app from './firebase.js';
+import firebase from './firebase.js';
+import { getDatabase, ref, onValue, push, remove } from 'firebase/database';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 // importing components
 import SearchForm from './SearchForm.js';
 import DisplayMovies from './DisplayMovies.js';
@@ -81,6 +82,13 @@ function App() {
 
   // year state to use for later so that the user knows what year he searched for the summer movies (since user input gets cleared after each submission, needed to find a different alternative to display it onto the page when the user has already submitted), gets value inside the filtering of the copy of the all movies array since if it were done during the mapping of the all movies array, it wouldn't have a value yet (can't do it after the return statement)
   const [movieYear, setMovieYear] = useState("");
+
+  // const [ movieId, setMovieId] = useState('');
+  // const [ movieTitle, setMovieTitle] = useState('');
+
+  // const [ userMovie, setUserMovie] = useState('');
+
+  const [ userMovies, setUserMovies] = useState([]);
 
 
   // let variables to use for the while loop
@@ -163,6 +171,8 @@ function App() {
       const filteredMovieItems = copyAllMovies.filter((movie) => {
         // setting the movie year state with the value of the newly added year property from our moviesWithMonthDay array copy
         setMovieYear(movie.year);
+        // setMovieId(movie.id);
+        // setMovieTitle(movie.original_title);
 
         // if the month is september, only show the days of that month less than or equal to 4th (so 3, since there are only 30 days in September, so the number is less by one)
         if (movie.month === 8) {
@@ -203,6 +213,22 @@ function App() {
     console.log(counter);
   }
 
+  useEffect(() => {
+    const database = getDatabase(firebase);
+    const dbRef = ref(database);
+    
+    onValue( dbRef, (response) => {
+      const data = response.val();
+      const newState = [];
+
+      for(let selectedMovies in data){
+        newState.push(data[selectedMovies]);
+      }
+      setUserMovies(newState);
+      console.log(userMovies);
+    })
+  }, [])
+
   // submit handler for search form
   const handleSearchSubmit = (event) => {
     event.preventDefault();
@@ -224,6 +250,18 @@ function App() {
     setUserSearch(event.target.value);
   }
   
+  const handleClick = (e) => {
+    const database = getDatabase(firebase);
+    const dbRef = ref(database);
+    let userMovie = e.target.value;
+
+    console.log(e.target.value);
+
+    // if(e.target.value !== '0' && e.target.value !== ''){
+      // setUserMovie(e.target.value);
+    // }
+    push(dbRef, `${userMovie}`);
+  }
 
   return (
     <div className="App">
@@ -257,6 +295,8 @@ function App() {
           movies={movies}
           filteredMovies={filteredMovies}
           allFilteredMovies={allFilteredMovies}
+          handleClick={handleClick}
+          
         />
         : null
       }
