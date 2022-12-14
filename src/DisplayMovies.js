@@ -3,7 +3,7 @@
 import MoviePlaceholder from './movie_default.png';
 
 // passing in the value stored in the movies state as a prop and destructuring it
-const DisplayMovies = ({allFilteredMovies, handleClick}) => {
+const DisplayMovies = ({allFilteredMovies, handleClick, limitClick }) => {
 
     return(
         <section className='movieResults'>
@@ -29,6 +29,7 @@ const DisplayMovies = ({allFilteredMovies, handleClick}) => {
                                 // give the button an id with the value of the matching movie id to the movie title (can then use e.target.id in the click handler to have more useful data in the database)
                                 id={movie.id}
                                 onClick={handleClick}
+                                disabled={limitClick}
                             >+</button>
                         </li>
                     )
