@@ -54,13 +54,16 @@
 // importing firebase
 import app from './firebase.js';
 // import firebase from './firebase.js';
+// need to import remove too (haven't used it yet to avoid unused var error)
 import { getDatabase, ref, onValue, push } from 'firebase/database';
 
+// use effect for fetching our firebase data and preventing memory leak when user leaves the page
 import { useState, useEffect } from 'react';
+
 // importing components
 import SearchForm from './SearchForm.js';
 import DisplayMovies from './DisplayMovies.js';
-
+// most likely gonna have another component for the prediction list (can also fetch the data in that same component?)
 
 import './App.css';
 
@@ -92,7 +95,7 @@ function App() {
   const [listSubmit, setListSubmit] = useState(false);
 
   // firebase Key state to use as a key prop when mapping through our data from firebase
-  const [firebaseKey, setFirebaseKey] = useState("");
+  // const [firebaseKey, setFirebaseKey] = useState("");
 
   // let variables to use for the while loop
   // counter for page param, default value 0 (gets increased in the while loop)
@@ -221,8 +224,10 @@ function App() {
     const database = getDatabase(app);
     // const dbRef = ref(database);
     // giving our database a reference under predictions (a bit more structured)
-    const predictionRef = ref(database, "Predictions");
-
+    // nesting our soon to be declared object (click handler) inside a collection called Predictions that contains collections of the data invoked by the user per movieYear (adding in the movie info under the specific/matching year with the reference path) (referenced intro to firebase lesson from the notes)
+    // like this we already got the data sorted into different collections based on the year
+    const predictionRef = ref(database, `Predictions / ${movieYear}`);
+    
     onValue( predictionRef, (response) => {
       const data = response.val();
       const newState = [];
@@ -234,12 +239,12 @@ function App() {
       setUserMovies(newState);
       
     })
-  }, [])
+    // adding in movieYear state here inside the dependency array to avoid missing dependency error (thankfully not too hard on the data as opposed to the whole userMovies state array)
+  }, [movieYear])
 
 
-  // console logging userMovies outside of useEffect to avoid missing dependency error
   console.log(userMovies);
-  
+  console.log(movieYear);
 
   // submit handler for search form
   const handleSearchSubmit = (event) => {
@@ -255,6 +260,8 @@ function App() {
     // setting the all filtered movies array back to an empty array, so that same movies won't be shown again for next search
     setAllFilteredMovies([]);
     
+    // setting the clicked state back to false, so that user doesn't see the list immediately when searching for a new year (only upon clicking the plus button)
+    setClicked(false);
       
   }
 
@@ -263,11 +270,14 @@ function App() {
     setUserSearch(event.target.value);
   }
   
+  // click handler for adding a movie to the prediction list
   const handleClick = (e) => {
     const database = getDatabase(app);
     // const dbRef = ref(database);
 
-    const predictionRef = ref(database, "Predictions");
+    // nesting our soon to be declared object inside a collection called Predictions that contains collections of data per movieYear (adding in the movie info under the specific/matching year with the reference path) (referenced intro to firebase lesson from the notes)
+    // this seems to have solved the different lists per year issue
+    const predictionRef = ref(database, `Predictions / ${movieYear}`);
 
     // now we're adding the matching id and value (title and movie id into our database)
     const userMovieTitle = e.target.value;
@@ -280,34 +290,44 @@ function App() {
     // used this video as a reference for nesting properties inside our database
     // https://www.youtube.com/watch?v=OlyA7Q0qPPE
 
+    // defining our object that we are going to push into our database
     const listedMovie = {
       userMovieTitle,
-      userMovieId,
-      movieYear
-      // movieTitle
+      userMovieId
     }
 
     // if(e.target.value !== '0' && e.target.value !== ''){
       // setUserMovie(e.target.value);
     // }
     // push(predictionRef, `${userMovie}`);
+
+    // pushing our object into our database, while at the same time storing that inside a variable to then use in order to access our key from firebase (using that for when we map through our state userMovies containing all the data later on)
     const firebaseObj = push(predictionRef, listedMovie);
     console.log(firebaseObj);
 
     // getting the firebase key from our data object
-    const fireKey = firebaseObj.key;
-    console.log(fireKey);
-    setFirebaseKey(fireKey);
+    const firebaseKey = firebaseObj.key;
+    console.log(firebaseKey);
+    // setFirebaseKey(fireKey);
 
+    // updating the values of our states, in order to use them then as conditions inside our return
     setClicked(true);
     setSearchSubmit(true);
     setListSubmit(false);
   }
+
+  // click handler for list submission
   const handleListSubmit = () => {
     // event.preventDefault();
+    // updating the states that we will use as conditions to determine whether to show the prediction list or not (or the submit message)
     setListSubmit(true);
     setSearchSubmit(false);
   }
+
+  // next step: adding an input change handler for the dropdown numbers inside the prediction list
+
+  // also making sure that the dropdown numbers as well the movie items don't repeat themselves (maybe use a counter and/or the ids stored inside a new empty array for that? also an array for the user selection values?)
+  // maybe though might be wise to control the dropdown values (whether they repeat themselves or not) when the user is submitting since the user might want to change the order of the list multiple times and for that some numbers are bound to repeat themselves temporarily
 
 
   return (
@@ -373,13 +393,19 @@ function App() {
       </ul>
       : null
       } */}
+
+      {/* might have to store this inside another component PredictionList */}
+
+      {/* if: only display the prediction list when the user has clicked the plus button under the movie and when the user hasn't submitted the list yet and also only when the user has actually hit the search button for movies under a specific year (submitted the search form) */}
       {
         clicked && listSubmit === false && searchSubmit ? 
        <>
         <ul>
-          {userMovies.map((userMovie, firebaseKey) => {
+          {userMovies.map((movieYear, firebaseKey) => {
             return(
+              // using our key for our firebase object as a key prop
               <li key={firebaseKey}>
+                {/* still have to add an onChange and a value set to the user selection of the number input  */}
                 <select name="selectedList" id="selectedList" required>
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -392,16 +418,18 @@ function App() {
                   <option value="9">9</option>
                   <option value="10">10</option>
                 </select>
-                <p>{userMovie.userMovieTitle}</p>
+                {/* since now the movie properties like id and title are nested inside the corresponding year, we are using movieYear (as a parameter in the map and here) */}
+                <p>{movieYear.userMovieTitle}</p>
               </li>
             )
           })}
         </ul>
         <button onClick={handleListSubmit} type="submit">Submit</button>
       </>
-      
+      // else if: the user has submitted the list, but not searched for a another year yet, show a submit message
         : listSubmit && searchSubmit === false ? 
           <p>Your List Has Been Submitted</p>
+          // else: don't display anything
           : null
       }
     </div>
