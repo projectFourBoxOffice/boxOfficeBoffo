@@ -24,7 +24,10 @@ const DisplayMovies = ({allFilteredMovies, handleClick}) => {
                             {/* making sure the release date of the displayed movie results match the year of the user input */}
                             <p>{movie.release_date}</p>
                             <button
+                                // give the button a value of the movie title that we're gonna use for our realtime database and display to the user later on (e.target.value) 
                                 value={movie.original_title}
+                                // give the button an id with the value of the matching movie id to the movie title (can then use e.target.id in the click handler to have more useful data in the database)
+                                id={movie.id}
                                 onClick={handleClick}
                             >+</button>
                         </li>

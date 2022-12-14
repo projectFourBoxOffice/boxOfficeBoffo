@@ -53,8 +53,8 @@
 
 // importing firebase
 import app from './firebase.js';
-import firebase from './firebase.js';
-import { getDatabase, ref, onValue, push, remove } from 'firebase/database';
+// import firebase from './firebase.js';
+import { getDatabase, ref, onValue, push } from 'firebase/database';
 
 import { useState, useEffect } from 'react';
 // importing components
@@ -83,9 +83,6 @@ function App() {
   // year state to use for later so that the user knows what year he searched for the summer movies (since user input gets cleared after each submission, needed to find a different alternative to display it onto the page when the user has already submitted), gets value inside the filtering of the copy of the all movies array since if it were done during the mapping of the all movies array, it wouldn't have a value yet (can't do it after the return statement)
   const [movieYear, setMovieYear] = useState("");
 
-  // const [ movieId, setMovieId] = useState('');
-  // const [ movieTitle, setMovieTitle] = useState('');
-
   // const [ userMovie, setUserMovie] = useState('');
 
   const [ userMovies, setUserMovies] = useState([]);
@@ -94,7 +91,8 @@ function App() {
 
   const [listSubmit, setListSubmit] = useState(false);
 
-  
+  // firebase Key state to use as a key prop when mapping through our data from firebase
+  const [firebaseKey, setFirebaseKey] = useState("");
 
   // let variables to use for the while loop
   // counter for page param, default value 0 (gets increased in the while loop)
@@ -176,8 +174,7 @@ function App() {
       const filteredMovieItems = copyAllMovies.filter((movie) => {
         // setting the movie year state with the value of the newly added year property from our moviesWithMonthDay array copy
         setMovieYear(movie.year);
-        // setMovieId(movie.id);
-        // setMovieTitle(movie.original_title);
+        
 
         // if the month is september, only show the days of that month less than or equal to 4th (so 3, since there are only 30 days in September, so the number is less by one)
         if (movie.month === 8) {
@@ -218,21 +215,31 @@ function App() {
     console.log(counter);
   }
 
-  useEffect((userMovie) => {
-    const database = getDatabase(firebase);
-    const dbRef = ref(database);
-    
-    onValue( dbRef, (response) => {
+  
+
+  useEffect(() => {
+    const database = getDatabase(app);
+    // const dbRef = ref(database);
+    // giving our database a reference under predictions (a bit more structured)
+    const predictionRef = ref(database, "Predictions");
+
+    onValue( predictionRef, (response) => {
       const data = response.val();
       const newState = [];
 
       for(let key in data){
-        newState.push({key: key , name: data[key]});
-      }
+        newState.push({key, ...data[key]});
+      }   
+      
       setUserMovies(newState);
-      console.log(userMovies);
+      
     })
   }, [])
+
+
+  // console logging userMovies outside of useEffect to avoid missing dependency error
+  console.log(userMovies);
+  
 
   // submit handler for search form
   const handleSearchSubmit = (event) => {
@@ -257,17 +264,38 @@ function App() {
   }
   
   const handleClick = (e) => {
-    const database = getDatabase(firebase);
-    const dbRef = ref(database);
-    let userMovie = e.target.value;
-    
+    const database = getDatabase(app);
+    // const dbRef = ref(database);
+
+    const predictionRef = ref(database, "Predictions");
+
+    // now we're adding the matching id and value (title and movie id into our database)
+    const userMovieTitle = e.target.value;
+    const userMovieId = e.target.id;
 
     console.log(e.target.value);
+    console.log(e.target.id);
+    // console.log(movieId);
+
+    const listedMovie = {
+      userMovieTitle,
+      userMovieId,
+      movieYear
+      // movieTitle
+    }
 
     // if(e.target.value !== '0' && e.target.value !== ''){
       // setUserMovie(e.target.value);
     // }
-    push(dbRef, `${userMovie}`);
+    // push(predictionRef, `${userMovie}`);
+    const firebaseObj = push(predictionRef, listedMovie);
+    console.log(firebaseObj);
+
+    // getting the firebase key from our data object
+    const fireKey = firebaseObj.key;
+    console.log(fireKey);
+    setFirebaseKey(fireKey);
+
     setClicked(true);
     setSearchSubmit(true);
     setListSubmit(false);
@@ -312,7 +340,6 @@ function App() {
           filteredMovies={filteredMovies}
           allFilteredMovies={allFilteredMovies}
           handleClick={handleClick}
-          
         />
         : null
       }
@@ -347,9 +374,9 @@ function App() {
         clicked && listSubmit === false && searchSubmit ? 
        <>
         <ul>
-          {userMovies.map((userMovie) => {
+          {userMovies.map((userMovie, firebaseKey) => {
             return(
-              <li key={userMovie.key}>
+              <li key={firebaseKey}>
                 <select name="selectedList" id="selectedList" required>
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -362,7 +389,7 @@ function App() {
                   <option value="9">9</option>
                   <option value="10">10</option>
                 </select>
-                <p>{userMovie.name}</p>
+                <p>{userMovie.userMovieTitle}</p>
               </li>
             )
           })}
