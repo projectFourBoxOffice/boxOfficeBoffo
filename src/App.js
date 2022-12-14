@@ -277,6 +277,9 @@ function App() {
     console.log(e.target.id);
     // console.log(movieId);
 
+    // used this video as a reference for nesting properties inside our database
+    // https://www.youtube.com/watch?v=OlyA7Q0qPPE
+
     const listedMovie = {
       userMovieTitle,
       userMovieId,
