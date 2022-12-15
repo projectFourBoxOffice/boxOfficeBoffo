@@ -237,7 +237,7 @@ function App() {
     // giving our database a reference under predictions (a bit more structured)
     // nesting our soon to be declared object (click handler) inside a collection called Predictions that contains collections of the data invoked by the user per movieYear (adding in the movie info under the specific/matching year with the reference path) (referenced intro to firebase lesson from the notes)
     // like this we already got the data sorted into different collections based on the year
-    const predictionRef = ref(database, `Predictions / ${movieYear}`);
+    const predictionRef = ref(database, `Predictions/${movieYear}`);
     
     onValue( predictionRef, (response) => {
       const data = response.val();
@@ -321,7 +321,7 @@ function App() {
 
     // nesting our soon to be declared object inside a collection called Predictions that contains collections of data per movieYear (adding in the movie info under the specific/matching year with the reference path) (referenced intro to firebase lesson from the notes)
     // this seems to have solved the different lists per year issue
-    const predictionRef = ref(database, `Predictions / ${movieYear}`);
+    const predictionRef = ref(database, `Predictions/${movieYear}`);
     
         // now we're adding the matching id and value (title and movie id into our database)
         const userMovieTitle = e.target.value;
@@ -376,9 +376,10 @@ function App() {
     setSearchSubmit(true);
     setListSubmit(false);
   }
-  const handleRemoveClick = (movieId) => {
+  const handleRemoveClick = (nodeToRemove) => {
+    console.log(nodeToRemove);
     const database = getDatabase(app);
-    const predictionRef = ref(database, ` Predictions / ${movieYear}`);
+    const predictionRef = ref(database, `Predictions/${movieYear}/${nodeToRemove}`);
     remove(predictionRef);
   }
 
@@ -474,10 +475,10 @@ function App() {
         clicked && listSubmit === false && searchSubmit ? 
        <>
         <ul>
-          {userMovies.map((movieYear, firebaseKey) => {
+          {userMovies.map((movieObj) => {
             return(
               // using our key for our firebase object as a key prop
-              <li key={firebaseKey}>
+              <li key={movieObj.key}>
                 {/* still have to add an onChange and a value set to the user selection of the number input  */}
                 <select name="selectedList" id="selectedList" required>
                   <option value="1">1</option>
@@ -492,8 +493,8 @@ function App() {
                   <option value="10">10</option>
                 </select>
                 {/* since now the movie properties like id and title are nested inside the corresponding year, we are using movieYear (as a parameter in the map and here) */}
-                <p>{movieYear.userMovieTitle}</p>
-                <button onClick={() => handleRemoveClick(firebaseKey)}>Remove</button>
+                <p>{movieObj.userMovieTitle}</p>
+                <button onClick={() => handleRemoveClick(movieObj.key)}>Remove</button>
               </li>
             )
           })}
