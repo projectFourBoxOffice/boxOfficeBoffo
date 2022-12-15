@@ -3,7 +3,7 @@
 import MoviePlaceholder from './movie_default.png';
 
 // passing in the value stored in the movies state as a prop and destructuring it
-const DisplayMovies = ({allFilteredMovies, handleClick, limitClick }) => {
+const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached }) => {
 
     return(
         <section className='movieResults'>
@@ -30,7 +30,7 @@ const DisplayMovies = ({allFilteredMovies, handleClick, limitClick }) => {
                                 id={movie.id}
                                 onClick={handleClick}
                                 disabled={limitClick}
-                            >+</button>
+                            >{endReached}</button>
                         </li>
                     )
                 })}
