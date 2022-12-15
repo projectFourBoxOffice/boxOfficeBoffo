@@ -108,6 +108,8 @@ function App() {
   const start = "Add to the list";
   const [endReached, setEndReached] = useState(start);
 
+  const [limitClick, setLimitClick] = useState(false);
+
   // firebase Key state to use as a key prop when mapping through our data from firebase
   // const [firebaseKey, setFirebaseKey] = useState("");
 
@@ -319,6 +321,8 @@ function App() {
 
     setLimitClick(false);
       
+    setClicked(false);
+
   }
 
   // handles input change, setting the userSearch state equal to the value of the targeted input
@@ -328,6 +332,7 @@ function App() {
 
   
   // click handler for adding a movie to the prediction list
+  let movieIds = []
   const handleClick = (e) => {
     const database = getDatabase(app);
     // const dbRef = ref(database);
@@ -335,6 +340,42 @@ function App() {
     // nesting our soon to be declared object inside a collection called Predictions that contains collections of data per movieYear (adding in the movie info under the specific/matching year with the reference path) (referenced intro to firebase lesson from the notes)
     // this seems to have solved the different lists per year issue
     const predictionRef = ref(database, `Predictions / ${movieYear}`);
+    
+        // now we're adding the matching id and value (title and movie id into our database)
+        const userMovieTitle = e.target.value;
+        const userMovieId = e.target.id;
+    
+        console.log(e.target.value);
+        console.log(e.target.id);
+        // console.log(movieId);
+    
+        // used this video as a reference for nesting properties inside our database
+        // https://www.youtube.com/watch?v=OlyA7Q0qPPE
+        
+        // defining our object that we are going to push into our database
+        const listedMovie = {
+          userMovieTitle,
+          userMovieId
+        }
+        
+        // if(e.target.value !== '0' && e.target.value !== ''){
+          // setUserMovie(e.target.value);
+          // }
+          // push(predictionRef, `${userMovie}`);
+          
+          // pushing our object into our database, while at the same time storing that inside a variable to then use in order to access our key from firebase (using that for when we map through our state userMovies containing all the data later on)
+          const firebaseObj = push(predictionRef, listedMovie);
+          console.log(firebaseObj);
+          movieIds.push(listedMovie.userMovieId);
+          console.log(movieIds)
+          
+        // getting the firebase key from our data object
+        const firebaseKey = firebaseObj.key;
+        console.log(firebaseKey);
+      
+        if (userMovies.length >= 10) {
+          setLimitClick(true)
+        }
 
     // now we're adding the matching id and value (title and movie id into our database)
     const userMovieTitle = e.target.value;
@@ -373,6 +414,8 @@ function App() {
       setEndReached(end);
     }
 
+    
+    // setFirebaseKey(fireKey);
 
     // updating the values of our states, in order to use them then as conditions inside our return
     setClicked(true);
@@ -430,6 +473,7 @@ function App() {
           filteredMovies={filteredMovies}
           allFilteredMovies={allFilteredMovies}
           handleClick={handleClick}
+
           // added={added}
           userMovies={userMovies}
           limitClick={limitClick}
