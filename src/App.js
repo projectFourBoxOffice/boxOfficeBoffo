@@ -94,6 +94,20 @@ function App() {
 
   const [listSubmit, setListSubmit] = useState(false);
 
+  let movieIds = [];
+  // const [idArray, setIdArray] = useState([]);
+
+  // // const notAdded = "Add to the list"
+  // // const alreadyAdded = "Already added" 
+  // const [added, setAdded] = useState(false);
+
+  
+  // state for text shown when user either has already added 10 items to his list
+  const end = "Added 10 items to the list";
+  // or reached cap of list items
+  const start = "Add to the list";
+  const [endReached, setEndReached] = useState(start);
+
   // firebase Key state to use as a key prop when mapping through our data from firebase
   // const [firebaseKey, setFirebaseKey] = useState("");
 
@@ -218,7 +232,7 @@ function App() {
     console.log(counter);
   }
 
-  
+  const [limitClick, setLimitClick] = useState(false);
 
   useEffect(() => {
     const database = getDatabase(app);
@@ -229,23 +243,57 @@ function App() {
     const predictionRef = ref(database, `Predictions / ${movieYear}`);
     
     onValue( predictionRef, (response) => {
-      const data = response.val();
       const newState = [];
 
+      const data = response.val();
+
+      
       for(let key in data){
         newState.push({key, ...data[key]});
       }   
       
-      setUserMovies(newState);
       
+      setUserMovies(newState);
+
+
+      // setIdArray(movieIds);
+
+      // if (movieIds.includes(userMovies.userMovieId) && clicked) {
+      //   setAdded(true);
+      // }
+      // else {
+      //   setAdded(false);
+      // }
+
+
     })
     // adding in movieYear state here inside the dependency array to avoid missing dependency error (thankfully not too hard on the data as opposed to the whole userMovies state array)
   }, [movieYear])
 
-
   console.log(userMovies);
   console.log(movieYear);
 
+  // loop through the user movies state that has our object with the ids of the movies that the user selected to then push them into a new array
+  // this then allows us to compare if an id is already included in the array, which then helps us avoid repetitions of the user selection, ie. the user can't add the same movie twice to his list 
+  for (let i in userMovies) {
+    console.log(i);
+    console.log(userMovies[i].userMovieId);
+    movieIds.push(userMovies[i].userMovieId);
+    console.log(movieIds);
+    
+    // movieIds.push(userMovies[i].userMovieId);
+  }
+  
+  // userMovies.forEach((item) => {
+  //   movieIds.push(item.userMovieId);
+  //   console.log(movieIds);
+  // })
+  
+  if (userMovies.length >= 9 && userMovies.movieYear === movieYear) {
+    setLimitClick(true);
+    setEndReached(end);
+  }
+  
   // submit handler for search form
   const handleSearchSubmit = (event) => {
     event.preventDefault();
@@ -261,7 +309,15 @@ function App() {
     setAllFilteredMovies([]);
     
     // setting the clicked state back to false, so that user doesn't see the list immediately when searching for a new year (only upon clicking the plus button)
-    setClicked(false);
+    if (userMovies.movieYear !== userSearch) {
+      setClicked(false);
+      setEndReached(start);
+    }
+    else {
+      setClicked(true);
+    }
+
+    setLimitClick(false);
       
   }
 
@@ -269,6 +325,7 @@ function App() {
   const handleSearchInput = (event) => {
     setUserSearch(event.target.value);
   }
+
   
   // click handler for adding a movie to the prediction list
   const handleClick = (e) => {
@@ -296,25 +353,35 @@ function App() {
       userMovieId
     }
 
-    // if(e.target.value !== '0' && e.target.value !== ''){
-      // setUserMovie(e.target.value);
-    // }
-    // push(predictionRef, `${userMovie}`);
 
-    // pushing our object into our database, while at the same time storing that inside a variable to then use in order to access our key from firebase (using that for when we map through our state userMovies containing all the data later on)
-    const firebaseObj = push(predictionRef, listedMovie);
-    console.log(firebaseObj);
+    // only pushing the selected movie by the user to our database if the selected movie's id doesn't repeat itself and there are less than 10 items (so that user can only add 10 items to his list)
+    if (!movieIds.includes(userMovieId) && movieIds.length < 10) {
 
-    // getting the firebase key from our data object
-    const firebaseKey = firebaseObj.key;
-    console.log(firebaseKey);
-    // setFirebaseKey(fireKey);
+      // pushing our object into our database, while at the same time storing that inside a variable to then use in order to access our key from firebase (using that for when we map through our state userMovies containing all the data later on)
+      const firebaseObj = push(predictionRef, listedMovie);
+      console.log(firebaseObj);
+  
+     
+      // getting the firebase key from our data object
+      const firebaseKey = firebaseObj.key;
+      console.log(firebaseKey);
+      
+    }
+    
+    if (movieIds.length >= 9 ) {
+      setLimitClick(true);
+      setEndReached(end);
+    }
+
 
     // updating the values of our states, in order to use them then as conditions inside our return
     setClicked(true);
     setSearchSubmit(true);
     setListSubmit(false);
   }
+
+  
+  
 
   // click handler for list submission
   const handleListSubmit = () => {
@@ -363,6 +430,10 @@ function App() {
           filteredMovies={filteredMovies}
           allFilteredMovies={allFilteredMovies}
           handleClick={handleClick}
+          // added={added}
+          userMovies={userMovies}
+          limitClick={limitClick}
+          endReached={endReached}
         />
         : null
       }

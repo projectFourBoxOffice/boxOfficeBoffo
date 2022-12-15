@@ -3,7 +3,7 @@
 import MoviePlaceholder from './movie_default.png';
 
 // passing in the value stored in the movies state as a prop and destructuring it
-const DisplayMovies = ({allFilteredMovies, handleClick}) => {
+const DisplayMovies = ({allFilteredMovies, handleClick, added, userMovies, limitClick, endReached}) => {
 
     return(
         <section className='movieResults'>
@@ -23,16 +23,22 @@ const DisplayMovies = ({allFilteredMovies, handleClick}) => {
                             <p>{movie.original_title}</p>
                             {/* making sure the release date of the displayed movie results match the year of the user input */}
                             <p>{movie.release_date}</p>
-                            <button
-                                // give the button a value of the movie title that we're gonna use for our realtime database and display to the user later on (e.target.value) 
-                                value={movie.original_title}
-                                // give the button an id with the value of the matching movie id to the movie title (can then use e.target.id in the click handler to have more useful data in the database)
-                                id={movie.id}
-                                onClick={handleClick}
-                            >+</button>
+                                 
+                            <button 
+                            onClick={handleClick} 
+                            id={movie.id} 
+                            value={movie.original_title} 
+                            disabled={limitClick}>
+                                {endReached}
+                            </button>
+                           
                         </li>
                     )
-                })}
+                  })
+                }
+                {/* {userMovies.map((movie) => {
+                   
+                })} */}
             </ul>
         </section>
     )
