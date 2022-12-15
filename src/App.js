@@ -55,7 +55,7 @@
 import app from './firebase.js';
 // import firebase from './firebase.js';
 // need to import remove too (haven't used it yet to avoid unused var error)
-import { getDatabase, ref, onValue, push } from 'firebase/database';
+import { getDatabase, ref, onValue, push, remove } from 'firebase/database';
 
 // use effect for fetching our firebase data and preventing memory leak when user leaves the page
 import { useState, useEffect } from 'react';
@@ -94,6 +94,7 @@ function App() {
 
   const [listSubmit, setListSubmit] = useState(false);
   const [limitClick, setLimitClick] = useState(false);
+  const [firebaseKey, setFirebaseKey] = useState("");
   // firebase Key state to use as a key prop when mapping through our data from firebase
   // const [firebaseKey, setFirebaseKey] = useState("");
 
@@ -355,6 +356,7 @@ function App() {
           // getting the firebase key from our data object
           const firebaseKey = firebaseObj.key;
           console.log(firebaseKey);
+          setFirebaseKey(firebaseKey);
 
           setLimitClick(false);
       
@@ -374,6 +376,12 @@ function App() {
     setSearchSubmit(true);
     setListSubmit(false);
   }
+  const handleRemoveClick = (movieId) => {
+    const database = getDatabase(app);
+    const predictionRef = ref(database, ` Predictions / ${movieYear}`);
+    remove(predictionRef);
+  }
+
 
   // click handler for list submission
   const handleListSubmit = () => {
@@ -424,6 +432,10 @@ function App() {
           handleClick={handleClick}
           limitClick={limitClick}
           endReached={endReached}
+          handleRemoveClick={handleRemoveClick}
+          firebaseKey={firebaseKey}
+          userMovies={userMovies}
+          movieYear={movieYear}
         />
         : null
       }
@@ -481,11 +493,13 @@ function App() {
                 </select>
                 {/* since now the movie properties like id and title are nested inside the corresponding year, we are using movieYear (as a parameter in the map and here) */}
                 <p>{movieYear.userMovieTitle}</p>
+                <button onClick={() => handleRemoveClick(firebaseKey)}>Remove</button>
               </li>
             )
           })}
         </ul>
         <button onClick={handleListSubmit} type="submit">Submit</button>
+
       </>
       // else if: the user has submitted the list, but not searched for a another year yet, show a submit message
         : listSubmit && searchSubmit === false ? 

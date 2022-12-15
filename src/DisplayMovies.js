@@ -3,7 +3,7 @@
 import MoviePlaceholder from './movie_default.png';
 
 // passing in the value stored in the movies state as a prop and destructuring it
-const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached }) => {
+const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached, handleRemoveClick, firebaseKey, userMovies, movieYear }) => {
 
     return(
         <section className='movieResults'>
@@ -31,6 +31,7 @@ const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached }
                                 onClick={handleClick}
                                 disabled={limitClick}
                             >{endReached}</button>
+                           
                         </li>
                     )
                 })}
