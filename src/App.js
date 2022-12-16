@@ -97,6 +97,8 @@ function App() {
 
   const [ deleted, setDeleted] = useState(false);
 
+  const [ faultySubmit, setFaultySubmit] = useState(false);
+
   // const [firebaseKey, setFirebaseKey] = useState("");
   // firebase Key state to use as a key prop when mapping through our data from firebase
   // const [firebaseKey, setFirebaseKey] = useState("");
@@ -363,7 +365,7 @@ function App() {
           // push(predictionRef, `${userMovie}`);
           
         // only pushing the selected movie by the user to our database if the selected movie's id doesn't repeat itself and there are less than 10 items (so that user can only add 10 items to his list)
-        if (!movieIdsArray.includes(userMovieId) && movieIdsArray.length < 11) {
+        if (!movieIdsArray.includes(userMovieId) && movieIdsArray.length <= 10) {
 
           // pushing our object into our database, while at the same time storing that inside a variable to then use in order to access our key from firebase (using that for when we map through our state userMovies containing all the data later on)
           const firebaseObj = push(predictionRef, listedMovie);
@@ -426,8 +428,14 @@ function App() {
   const handleListSubmit = () => {
     // event.preventDefault();
     // updating the states that we will use as conditions to determine whether to show the prediction list or not (or the submit message)
-    setListSubmit(true);
-    setSearchSubmit(false);
+    if(userMovies.length === 10){
+      setListSubmit(true);
+      setSearchSubmit(false);
+      setFaultySubmit(false);
+    } else {
+      setFaultySubmit(true);
+    }
+
   }
 
   // next step: adding an input change handler for the dropdown numbers inside the prediction list
@@ -537,6 +545,13 @@ function App() {
             )
           })}
         </ul>
+        {
+          faultySubmit ? 
+          <div>
+            <p>You cannot submit your list if you have not added 10 movies</p>
+          </div> 
+          : null
+        }
         {
           deleted === false ? 
           <button onClick={handleConfirm}>Delete List</button>
