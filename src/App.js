@@ -101,6 +101,8 @@ function App() {
 
   const [loading, setLoading] = useState(false);
 
+  const [userRating, setUserRating] = useState('');
+
   // const [firebaseKey, setFirebaseKey] = useState("");
   // firebase Key state to use as a key prop when mapping through our data from firebase
   // const [firebaseKey, setFirebaseKey] = useState("");
@@ -403,6 +405,12 @@ function App() {
       
     
   }
+  
+   const handleMovieRating = (e) => {
+    setUserRating(e.target.value);
+    console.log(e.target.value);
+
+   }
 
   // click handler for remove button (for each single list item)
   const handleRemoveClick = (nodeToRemove) => {
@@ -531,7 +539,7 @@ function App() {
               // using our key for our firebase object as a key prop
               <li key={movieObj.key}>
                 {/* still have to add an onChange and a value set to the user selection of the number input  */}
-                <select name="selectedList" id="selectedList" required>
+                <select name="selectedList" id="selectedList" required value={userRating} onChange={handleMovieRating}>
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
