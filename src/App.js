@@ -94,12 +94,13 @@ function App() {
 
   const [listSubmit, setListSubmit] = useState(false);
   const [limitClick, setLimitClick] = useState(false);
-  const [firebaseKey, setFirebaseKey] = useState("");
+
+  // const [firebaseKey, setFirebaseKey] = useState("");
   // firebase Key state to use as a key prop when mapping through our data from firebase
   // const [firebaseKey, setFirebaseKey] = useState("");
 
   // empty array for the user movie ids (using for later to compare if that array contains current id of the movie chosen by the user)
-  let movieIds = []
+  let movieIdsArray = [];
 
   // state for text shown when user either has already added 10 items to his list
   const end = "Added 10 items to the list";
@@ -237,7 +238,7 @@ function App() {
     // giving our database a reference under predictions (a bit more structured)
     // nesting our soon to be declared object (click handler) inside a collection called Predictions that contains collections of the data invoked by the user per movieYear (adding in the movie info under the specific/matching year with the reference path) (referenced intro to firebase lesson from the notes)
     // like this we already got the data sorted into different collections based on the year
-    const predictionRef = ref(database, `Predictions/${movieYear}`);
+    const predictionRef = ref(database, `Predictions/${movieYear}/movies`);
     
     onValue( predictionRef, (response) => {
       const data = response.val();
@@ -253,14 +254,18 @@ function App() {
     // adding in movieYear state here inside the dependency array to avoid missing dependency error (thankfully not too hard on the data as opposed to the whole userMovies state array)
   }, [movieYear])
 
+  console.log(userMovies);
+  console.log(movieYear);
+  
 
   // loop through the user movies state that has our object with the ids of the movies that the user selected to then push them into a new array
   // this then allows us to compare if an id is already included in the array, which then helps us avoid repetitions of the user selection, ie. the user can't add the same movie twice to his list 
+  
   for (let i in userMovies) {
     console.log(i);
     console.log(userMovies[i].userMovieId);
-    movieIds.push(userMovies[i].userMovieId);
-    console.log(movieIds);
+    movieIdsArray.push(userMovies[i].userMovieId);
+    console.log(movieIdsArray);
     
     // movieIds.push(userMovies[i].userMovieId);
   }
@@ -269,11 +274,6 @@ function App() {
   //   movieIds.push(item.userMovieId);
   //   console.log(movieIds);
   // })
-
-
-  console.log(userMovies);
-  console.log(movieYear);
-
 
   if (userMovies.length >= 9 && userMovies.movieYear === movieYear) {
     setLimitClick(true);
@@ -304,24 +304,39 @@ function App() {
     }
 
     setLimitClick(false);
-      
     setClicked(false);
+
+    if (movieIdsArray.length === 10 && clicked === false) {
+      setLimitClick(true);
+      setEndReached(end);
+    }
+    else if (movieIdsArray.length === 10 && clicked === true) {
+      setLimitClick(true);
+      setEndReached(end);
+    }
   }
 
   // handles input change, setting the userSearch state equal to the value of the targeted input
   const handleSearchInput = (event) => {
     setUserSearch(event.target.value);
   }
+
+  
   
   // click handler for adding a movie to the prediction list
-  
   const handleClick = (e) => {
+
+    // updating the values of our states, in order to use them then as conditions inside our return
+    setClicked(true);
+    setSearchSubmit(true);
+    setListSubmit(false);
+
     const database = getDatabase(app);
     // const dbRef = ref(database);
 
     // nesting our soon to be declared object inside a collection called Predictions that contains collections of data per movieYear (adding in the movie info under the specific/matching year with the reference path) (referenced intro to firebase lesson from the notes)
     // this seems to have solved the different lists per year issue
-    const predictionRef = ref(database, `Predictions/${movieYear}`);
+    const predictionRef = ref(database, `Predictions/${movieYear}/movies`);
     
         // now we're adding the matching id and value (title and movie id into our database)
         const userMovieTitle = e.target.value;
@@ -346,7 +361,7 @@ function App() {
           // push(predictionRef, `${userMovie}`);
           
         // only pushing the selected movie by the user to our database if the selected movie's id doesn't repeat itself and there are less than 10 items (so that user can only add 10 items to his list)
-        if (!movieIds.includes(userMovieId) && movieIds.length < 10) {
+        if (!movieIdsArray.includes(userMovieId) && movieIdsArray.length < 11) {
 
           // pushing our object into our database, while at the same time storing that inside a variable to then use in order to access our key from firebase (using that for when we map through our state userMovies containing all the data later on)
           const firebaseObj = push(predictionRef, listedMovie);
@@ -356,31 +371,40 @@ function App() {
           // getting the firebase key from our data object
           const firebaseKey = firebaseObj.key;
           console.log(firebaseKey);
-          setFirebaseKey(firebaseKey);
+          // setFirebaseKey(firebaseKey);
 
-          setLimitClick(false);
+          // setLimitClick(false);
       
         }
         
-        if (movieIds.length >= 9 ) {
+        if (userMovies.length >= 9 && !movieIdsArray.includes(userMovieId)) {
           setLimitClick(true);
           setEndReached(end);
         }
 
-  
+        if (movieIdsArray.length === 10 && clicked === false) {
+          setLimitClick(true);
+          setEndReached(end);
+        }
+        // else if (movieIdsArray.length === 10 && clicked === true) {
+        //   setLimitClick(true);
+        //   setEndReached(end);
+        // }
     
     // setFirebaseKey(fireKey);
       
-    // updating the values of our states, in order to use them then as conditions inside our return
-    setClicked(true);
-    setSearchSubmit(true);
-    setListSubmit(false);
+    
   }
+
+  // click handler for remove button (for each single list item)
   const handleRemoveClick = (nodeToRemove) => {
     console.log(nodeToRemove);
     const database = getDatabase(app);
-    const predictionRef = ref(database, `Predictions/${movieYear}/${nodeToRemove}`);
+    const predictionRef = ref(database, `Predictions/${movieYear}/movies/${nodeToRemove}`);
     remove(predictionRef);
+
+      setLimitClick(false);
+      setEndReached(start);
   }
 
 
@@ -434,7 +458,7 @@ function App() {
           limitClick={limitClick}
           endReached={endReached}
           handleRemoveClick={handleRemoveClick}
-          firebaseKey={firebaseKey}
+          // firebaseKey={firebaseKey}
           userMovies={userMovies}
           movieYear={movieYear}
         />
