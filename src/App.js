@@ -99,6 +99,8 @@ function App() {
 
   const [ faultySubmit, setFaultySubmit] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+
   // const [firebaseKey, setFirebaseKey] = useState("");
   // firebase Key state to use as a key prop when mapping through our data from firebase
   // const [firebaseKey, setFirebaseKey] = useState("");
@@ -123,7 +125,8 @@ function App() {
   // async function getMovies to make the API call (calling that function in the submit handler)
   const getMovies = async () => {
     // using the discover/movie endpoint in order to get the movie data with the year property and without the required query param (in the movie/search endpoint the query param would be a requirement which we don't want in our case, the user is looking for movie titles based on the release_year and not the other way around)
-   
+    setLoading(true);
+
     const url = new URL('https://api.themoviedb.org/3/discover/movie');
     
     // while loop to keep searching for results that match our filtered array, so that we get at least 10 summer movies for the user to add to his prediction list and sort later on
@@ -162,6 +165,7 @@ function App() {
       // store that results array into the movies state
       setMovies(movieResults);
       // console.log(movies);
+      setLoading(false);
 
       // need to filter by month (getMonth()) and day of the month (use the getDate() method for that)
       // https://www.w3schools.com/jsref/jsref_getdate.asp
@@ -456,6 +460,7 @@ function App() {
         userSearch={userSearch}
         movieYear={movieYear}
         searchSubmit={searchSubmit}
+        loading={loading}
       />
       {/* <form onSubmit={handleSubmit}>
         <label htmlFor="userSearch">Search a year</label>
