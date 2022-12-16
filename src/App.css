@@ -37,3 +37,41 @@ a {
     transform: rotate(360deg);
   }
 }
+
+/* 
+/* Colours */
+
+/* html{
+  font-size: 125%;
+  background-color: #03367d;
+}
+
+/* movieContainer */
+/* li{
+  background-color: #2671E0;
+} */
+
+/* 
+h1,
+p,
+button,
+li{
+  color: #56a4f9;
+} */
+/* 
+li{ 
+  padding: 2rem 0;
+  margin: 2rem 0;
+} */
+
+/* lighter */
+/* button{
+  margin-bottom: 2rem;
+  background-color: #56a4f9;
+} */
+/* 44c9fc */
+/* 
+button:hover{
+  background-color: #07a0db;
+}  */
+/* 11b9fa */

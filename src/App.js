@@ -95,6 +95,8 @@ function App() {
   const [listSubmit, setListSubmit] = useState(false);
   const [limitClick, setLimitClick] = useState(false);
 
+  const [ deleted, setDeleted] = useState(false);
+
   // const [firebaseKey, setFirebaseKey] = useState("");
   // firebase Key state to use as a key prop when mapping through our data from firebase
   // const [firebaseKey, setFirebaseKey] = useState("");
@@ -330,7 +332,7 @@ function App() {
     setClicked(true);
     setSearchSubmit(true);
     setListSubmit(false);
-
+    setDeleted(false);
     const database = getDatabase(app);
     // const dbRef = ref(database);
 
@@ -412,11 +414,11 @@ function App() {
       const database = getDatabase(app);
       const predictionRef = ref(database, `Predictions/${movieYear}/movies`);
       remove(predictionRef);
-
+      setDeleted(true);
       setLimitClick(false);
       setEndReached(start);
     } else {
-
+      setDeleted(false);
     }
   }
 
@@ -535,8 +537,16 @@ function App() {
             )
           })}
         </ul>
-        <button onClick={handleConfirm}>Delete List</button>
-        <button onClick={handleListSubmit} type="submit">Submit</button>
+        {
+          deleted === false ? 
+          <button onClick={handleConfirm}>Delete List</button>
+          : null
+        }
+        {
+          listSubmit === false && deleted === false ?
+          <button onClick={handleListSubmit} type="submit">Submit</button>
+          : null
+        }
 
       </>
       // else if: the user has submitted the list, but not searched for a another year yet, show a submit message

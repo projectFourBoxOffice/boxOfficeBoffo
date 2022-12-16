@@ -19,10 +19,10 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                 value={userSearch}
                 required
             />
-            <button type="submit">Search</button>
+            <button className="searchText" type="submit">Search</button>
             {
                 searchSubmit ?
-                <p>You searched for summer movies from the year {movieYear}.</p>
+                <p className="searchText">You searched for summer movies from the year {movieYear}.</p>
                 : null
             }
             
