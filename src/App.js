@@ -407,6 +407,18 @@ function App() {
       setEndReached(start);
   }
 
+  const handleConfirm = () => {
+    if(window.confirm("Are you sure you want to delete this list")) {
+      const database = getDatabase(app);
+      const predictionRef = ref(database, `Predictions/${movieYear}/movies`);
+      remove(predictionRef);
+
+      setLimitClick(false);
+      setEndReached(start);
+    } else {
+
+    }
+  }
 
   // click handler for list submission
   const handleListSubmit = () => {
@@ -523,6 +535,7 @@ function App() {
             )
           })}
         </ul>
+        <button onClick={handleConfirm}>Delete List</button>
         <button onClick={handleListSubmit} type="submit">Submit</button>
 
       </>
