@@ -9,7 +9,7 @@ html { box-sizing: border-box;}
 /* Import fonts */
 @import url('https://fonts.googleapis.com/css2?family=Barlow&family=Montserrat:wght@700&display=swap');
 
-/* General styles */
+
 html {
   font-size: 125%;
   background-color: #2d0c30;
@@ -42,8 +42,6 @@ a {
   }
 }
 
-
-/* movieContainer */
 li {
   background-color: #4c0f51;
 }
@@ -78,6 +76,8 @@ label {
   padding: 10px;
 }
 
+a:hover {
+  color: #935003;
+}
 
-/* lighter */
 

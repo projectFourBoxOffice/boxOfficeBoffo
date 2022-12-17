@@ -111,7 +111,7 @@ function App() {
   let movieIdsArray = [];
 
   // state for text shown when user either has already added 10 items to his list
-  const end = "Added 10 items to the list";
+  const end = "Maximum items reached";
   // or reached cap of list items
   const start = "Add to the list";
   const [endReached, setEndReached] = useState(start);
@@ -537,9 +537,11 @@ function App() {
           {userMovies.map((movieObj) => {
             return(
               // using our key for our firebase object as a key prop
-              <li key={movieObj.key}>
+              <li key={movieObj.key} type="chosenList">
+               
+                <p>{movieObj.userMovieTitle}</p>
                 {/* still have to add an onChange and a value set to the user selection of the number input  */}
-                <select name="selectedList" id="selectedList" required value={userRating} onChange={handleMovieRating}>
+                <select name="selectedList" id="selectedList" required value={userRating.userMovieTitle} onChange={handleMovieRating}>
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
@@ -552,9 +554,10 @@ function App() {
                   <option value="10">10</option>
                 </select>
                 {/* since now the movie properties like id and title are nested inside the corresponding year, we are using movieYear (as a parameter in the map and here) */}
-                <p>{movieObj.userMovieTitle}</p>
+             
                 <button onClick={() => handleRemoveClick(movieObj.key)}>Remove</button>
               </li>
+
             )
           })}
         </ul>

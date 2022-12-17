@@ -31,8 +31,9 @@ const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached, 
                                 onClick={handleClick}
                                 disabled={limitClick}
                             >{endReached}</button>
-                           
+
                         </li>
+
                     )
                 })}
             </ul>
