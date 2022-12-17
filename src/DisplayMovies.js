@@ -15,7 +15,7 @@ const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached, 
                         <li key={movie.id}>
                             {
                                 movie.poster_path ?
-                                <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={`Poster for ${movie.original_title}`} />
+                                <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} alt={`Poster for ${movie.original_title}`} />
                                 :
                                 // if no poster available, set a placeholder
                                 <img src={MoviePlaceholder} alt={`Placeholder poster for ${movie.original_title}`} />

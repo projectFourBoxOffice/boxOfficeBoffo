@@ -566,13 +566,13 @@ function App() {
           : null
         }
         {
-          deleted === false ? 
-          <button onClick={handleConfirm}>Delete List</button>
+          listSubmit === false && deleted === false ?
+          <button onClick={handleListSubmit} type="submit">Submit</button>
           : null
         }
         {
-          listSubmit === false && deleted === false ?
-          <button onClick={handleListSubmit} type="submit">Submit</button>
+          deleted === false ? 
+          <button onClick={handleConfirm}>Delete List</button>
           : null
         }
 
@@ -583,6 +583,9 @@ function App() {
           // else: don't display anything
           : null
       }
+       <footer>
+          <p>Created @ <a href="https://junocollege.com/" target="blank">Juno College of Technology</a></p>
+      </footer>
     </div>
   );
 }

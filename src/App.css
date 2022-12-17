@@ -6,9 +6,13 @@ html { box-sizing: border-box;}
 
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; border: 0; padding: 0; white-space: nowrap; clip-path: inset(100%); clip: rect(0 0 0 0); overflow: hidden;}
 
-/* general styles */
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Barlow&family=Montserrat:wght@700&display=swap');
+
+/* General styles */
 html {
   font-size: 125%;
+  background-color: #2d0c30;
 }
 
 ul {
@@ -26,7 +30,7 @@ a {
 
 
 .App-link {
-  color: #61dafb;
+  color: #2d0c30;
 }
 
 @keyframes App-logo-spin {
@@ -38,40 +42,42 @@ a {
   }
 }
 
-/* 
-/* Colours */
-
-/* html{
-  font-size: 125%;
-  background-color: #03367d;
-}
 
 /* movieContainer */
-/* li{
-  background-color: #2671E0;
-} */
+li {
+  background-color: #4c0f51;
+}
 
-/* 
+
 h1,
 p,
-button,
-li{
-  color: #56a4f9;
-} */
-/* 
+li,
+label {
+  color: #e27a05;
+  font-family: 'Barlow', sans-serif;
+}
+
+h1 {
+  text-transform: uppercase;
+  font-family: 'Montserrat', sans-serif;
+}
+
+button{
+  margin-bottom: 2rem;
+  background-color: #eae100;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
 li{ 
   padding: 2rem 0;
   margin: 2rem 0;
-} */
+}
+
+label {
+  padding: 10px;
+}
+
 
 /* lighter */
-/* button{
-  margin-bottom: 2rem;
-  background-color: #56a4f9;
-} */
-/* 44c9fc */
-/* 
-button:hover{
-  background-color: #07a0db;
-}  */
-/* 11b9fa */
+

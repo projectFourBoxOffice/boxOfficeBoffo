@@ -5,12 +5,12 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
 
     return(
         <form onSubmit={handleSearchSubmit}>
-            <label htmlFor="userSearch">Search for summer movies between the years 1900 and 2022 (inclusive)</label>
+            <label htmlFor="userSearch">Search for summer movies between the years 1900 and 2022</label>
             {/* have an input with the type number so that the user can only search for a year */}
             <input 
                 type="number" 
                 id="userSearch"
-                placeholder="2019"
+                placeholder="2022"
                 // controlling the user input with min and max, so that user can only search for summer movies between the years 1900 and 2022 (most recent)
                 min={1900}
                 max={2022}
