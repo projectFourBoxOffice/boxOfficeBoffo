@@ -228,7 +228,7 @@ function App() {
       // solution: add a while loop that keeps calling the API to get results from more pages as long as the length of the all filtered array is less than 10 (for that define a counter let variable before the while loop that is set to 0, then inside the while loop before the search params gets increased by one, then set the page param equal to that counter value, so that results get shown from more than one page when there is not enough (less than 10) on the first page)
 
       // if the length of our array that contains all filtered array values is greater than or equal to 10, break the while loop (since we only want to keep adding new results to our page/API call when there is less than 10 movies available on a page, default page is 1, but this page doesn't always have enough movies that match our filtering conditions, user needs to have at least 10 movies for the prediction list)
-      if (allFilteredArray.length >= 20) {
+      if (allFilteredArray.length >= 15) {
         break;
       }
 
@@ -533,11 +533,11 @@ function App() {
       {
         clicked && listSubmit === false && searchSubmit ? 
        <>
-        <ul>
+        <ul className="predictionList">
           {userMovies.map((movieObj) => {
             return(
               // using our key for our firebase object as a key prop
-              <li key={movieObj.key} type="chosenList">
+              <li key={movieObj.key} className="chosenList">
                
                 <p>{movieObj.userMovieTitle}</p>
                 {/* still have to add an onChange and a value set to the user selection of the number input  */}
@@ -560,14 +560,16 @@ function App() {
 
             )
           })}
-        </ul>
-        {
+             {
           faultySubmit ? 
           <div>
             <p>You cannot submit your list if you have not added 10 movies</p>
           </div> 
           : null
         }
+        
+
+        <div className="buttonContainer">
         {
           listSubmit === false && deleted === false ?
           <button onClick={handleListSubmit} type="submit">Submit</button>
@@ -578,6 +580,10 @@ function App() {
           <button onClick={handleConfirm}>Delete List</button>
           : null
         }
+         </div>
+       
+        </ul>
+     
 
       </>
       // else if: the user has submitted the list, but not searched for a another year yet, show a submit message
@@ -586,7 +592,7 @@ function App() {
           // else: don't display anything
           : null
       }
-       <footer>
+       <footer className={`${allFilteredMovies.length === 0 ? "noMovies" : ""} `}>
           <p>Created @ <a href="https://junocollege.com/" target="blank">Juno College of Technology</a></p>
       </footer>
     </div>

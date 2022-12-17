@@ -12,7 +12,7 @@ html { box-sizing: border-box;}
 
 html {
   font-size: 125%;
-  background-color: #2d0c30;
+  background-color: #001d3d;
 }
 
 ul {
@@ -42,8 +42,14 @@ a {
   }
 }
 
+ul {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 li {
-  background-color: #4c0f51;
+  background-color: #012448;
+  width: calc(100% / 4);
 }
 
 
@@ -51,7 +57,7 @@ h1,
 p,
 li,
 label {
-  color: #e27a05;
+  color:#ffc300;
   font-family: 'Barlow', sans-serif;
 }
 
@@ -77,7 +83,28 @@ label {
 }
 
 a:hover {
-  color: #935003;
+  font-weight:bolder;
 }
+
+.chosenList {
+  width: 100%;
+  background-color: #001d3d;
+  padding: 0;
+  margin: 0;
+}
+
+.predictionList {
+ flex-direction: column;
+ align-items: center;
+}
+
+footer {
+  margin-top: 80px;
+}
+
+.noMovies {
+  margin-top: 37%;
+}
+
 
 
