@@ -55,7 +55,7 @@
 import app from './firebase.js';
 // import firebase from './firebase.js';
 // need to import remove too (haven't used it yet to avoid unused var error)
-import { getDatabase, ref, onValue, push, remove } from 'firebase/database';
+import { getDatabase, ref, onValue, push, remove, update } from 'firebase/database';
 
 // use effect for fetching our firebase data and preventing memory leak when user leaves the page
 import { useState, useEffect } from 'react';
@@ -112,7 +112,7 @@ function App() {
   const [targeted, setTargeted] = useState("");
   const [selectedTitle, setSelectedTitle] = useState("");
  
-
+  const [repetition, setRepetition] = useState(false);
   // const [firebaseKey, setFirebaseKey] = useState("");
   // firebase Key state to use as a key prop when mapping through our data from firebase
   // const [firebaseKey, setFirebaseKey] = useState("");
@@ -317,6 +317,7 @@ function App() {
     // now we're adding the matching id and value (title and movie id into our database)
     const userMovieTitle = e.target.value;
     const userMovieId = e.target.id;
+    let rating = "";
     
     console.log(e.target.value);
     console.log(e.target.id);
@@ -328,7 +329,8 @@ function App() {
     // defining our object that we are going to push into our database
     const listedMovie = {
       userMovieTitle,
-      userMovieId
+      userMovieId,
+      rating
     }
 
     // calling the hash map function
@@ -388,7 +390,7 @@ function App() {
     // issue: when one item at a time gets removed, the item that is still supposed to stay added (wasn't removed), still changes back to add to the list (only happens when another item gets removed)
     // was able to fix it, but theoretically this issue shouldn't be, there is a bit of a delay between the movie title from our API object and the value of the targeted button (should both be the same values)
     const removedMovies = updatedMovies.map((movie) => {
-      if (movie.idsArray.includes(userMovieId)) {
+      if (movie.idsArray.includes(targeted.id)) {
         console.log(movieIdsArray);
         // console.log(e.currentTarget.id, e.currentTarget.value);
         console.log(movie.idsArray.includes(userMovieId));
@@ -399,7 +401,7 @@ function App() {
         let added = false;
         // setEndReached(start);
         // return {...movie, added: added};
-        return {...movie, added: added};
+        return {...movie, added: false};
       }
       
       else {
@@ -504,11 +506,108 @@ function App() {
     setClickedIdsHashMap(new Map(clickedIdsHashMap.set(k,v)));
   }
  
-
+ 
+  let ratingArray = []; // create an empty array
   // handle user input change from dropdown inside the prediction list
-  const handleMovieRating = (e) => {
+  const handleMovieRating = (e, key) => {
+    console.log(key);
     setUserRating(e.target.value);
+    const userInput = {
+      rating: e.target.value
+    }
     console.log(e.target.value);
+
+    // userMovies.forEach((movie) => {
+    //   if (movie.rating === e.target.value) {
+    //     setRepetition(true);
+    //     console.log(movie.rating);
+    //     console.log(e.target.value);
+    //   }
+    //   else {
+    //     setRepetition(false);
+    //     console.log(movie.rating);
+    //     console.log(e.target.value);
+    //     if (movie.key === key) {
+    //       movie.rating = e.target.value;
+    //     }
+    //     console.log(movie.rating);
+    //     const database = getDatabase(app);
+    //     // const dbRef = ref(database);
+
+    //     // nesting our soon to be declared object inside a collection called Predictions that contains collections of data per movieYear (adding in the movie info under the specific/matching year with the reference path) (referenced intro to firebase lesson from the notes)
+    //     // this seems to have solved the different lists per year issue
+    //     const predictionRef = ref(database, `Predictions/${movieYear}/movies/${key}`);
+    //     update(predictionRef, userInput);
+    //   }
+    // })
+
+    const ratingsArray = userMovies.map((movie) => {
+      if (movie.rating === e.target.value) {
+        setRepetition(true);
+        console.log(movie.rating);
+        console.log(e.target.value);
+        return movie;
+      }
+      else {
+        setRepetition(false);
+        console.log(movie.rating);
+        console.log(e.target.value);
+        if (movie.key === key) {
+          // movie.rating = e.target.value;
+          const database = getDatabase(app);
+          // const dbRef = ref(database);
+
+          // nesting our soon to be declared object inside a collection called Predictions that contains collections of data per movieYear (adding in the movie info under the specific/matching year with the reference path) (referenced intro to firebase lesson from the notes)
+            // this seems to have solved the different lists per year issue
+          const predictionRef = ref(database, `Predictions/${movieYear}/movies/${key}`);
+          update(predictionRef, userInput);
+          return {...movie, rating: e.target.value};
+        }
+        // console.log(movie.rating);
+        return movie;
+      }
+    })
+    console.log(ratingsArray);
+    setUserMovies(ratingsArray);
+    console.log(userMovies);
+    
+    
+   
+   
+    
+
+    // update(predictionRef, userInput);
+
+    // let i = 0;
+    // while (i < arraySize) {
+    //   // prompt the user for a string
+    //   const input = e.target.value;
+    //   // add the string to the array
+    //   myArray.push(input);
+      
+    //   i++;
+    // }
+
+    // for (let i in userMovies) {
+    //   console.log(i);
+    //   const userInput = e.target.value;
+    //   userMovies[i].userInput;
+    //   console.log(userMovies[i].userInput);
+    //   console.log(i.userInput);
+    // }
+
+    // const inputUserMovies = userMovies.map((item) => {
+    //   let rating = e.target.value;
+    //   return {...item, rating: rating};
+    // })
+    // console.log(inputUserMovies);
+    // setUserMovies(inputUserMovies);
+    // console.log(userMovies);
+
+
+    // // console.log(myArray); // [ "string1", "string2", "string3", "string4", "string5" ]
+
+    // console.log(e.target.value);
   }
 
   // maybe create an array for each user input in order to determine, which input has repeated itself to avoid submissions with same number for every list item
@@ -605,6 +704,7 @@ function App() {
           userRating={userRating}
           deleted={deleted}
           searchSubmit={searchSubmit}
+          repetition={repetition}
         />
         // else if: the user has submitted the list, but not searched for a another year yet, show a submit message
         : listSubmit && searchSubmit === false ? 

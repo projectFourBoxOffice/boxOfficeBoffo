@@ -36,7 +36,7 @@ const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached, 
                                 <>Added</>
                                 // : movie.added === false && userMovies.length < 10 && deleted === false ?
                                 // <>Add</>   
-                                : userMovies.length > 9 && deleted === false ?
+                                : userMovies.length === 10 && deleted === false ?
                                 <>Added 10 items to the list</>
                                 : movie.added === false && userMovies.length < 10 ?
                                 <>Add to the list</>

@@ -1,17 +1,23 @@
 // PredictionList component
 
-const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, handleRemoveClick, listSubmit, handleConfirm, handleListSubmit, handleMovieRating, userRating}) => {
+const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, handleRemoveClick, listSubmit, handleConfirm, handleListSubmit, handleMovieRating, userRating, repetition}) => {
 
 
     return(
         <section className="predictionList">
             <ul>
+                {
+                    repetition ?
+                    <p>Sorry, make sure the numbers don't repeat themselves</p>
+                    :
+                    null
+                }
             {userMovies.map((movieObj) => {
                 return(
                 // using our key for our firebase object as a key prop
                 <li key={movieObj.key}>
                     {/* still have to add an onChange and a value set to the user selection of the number input  */}
-                    <select name="selectedList" id="selectedList" required value={userRating} onChange={handleMovieRating}>
+                    <select name="selectedList" id="selectedList" required value={userRating.userMovieTitle} onChange={e => handleMovieRating(e, movieObj.key)}>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
