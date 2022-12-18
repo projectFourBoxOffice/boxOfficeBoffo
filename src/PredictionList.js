@@ -46,15 +46,15 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
             }
             </ul>
             {
-            faultySubmit && deleted === false && ratedList.every((e, i, a) => a.indexOf(e) === i) === true && submitAttempt && !ratedList.includes(undefined) ? 
+            faultySubmit && deleted === false && ratedList.every((element, index, array) => array.indexOf(element) === index) === true && submitAttempt && !ratedList.includes(undefined) ? 
             <div>
                 <p>You cannot submit your list if you have not added 10 movies.</p>
             </div> 
-            : ratedList.every((e, i, a) => a.indexOf(e) === i) === false && deleted === false && submitAttempt && !ratedList.includes(undefined) ?
+            : ratedList.every((element, index, array) => array.indexOf(element) === index) === false && deleted === false && submitAttempt && !ratedList.includes(undefined) ?
             <div>
                 <p>You cannot submit your list if the numbers of your list items repeat themselves.</p>
             </div>
-            : userMovies.length !== 10 && ratedList.every((e, i, a) => a.indexOf(e) === i) === false && deleted === false && submitAttempt && !ratedList.includes(undefined) ?
+            : userMovies.length !== 10 && ratedList.every((element, index, array) => array.indexOf(element) === index) === false && deleted === false && submitAttempt && !ratedList.includes(undefined) ?
             <div>
                 <p>Make sure your list has 10 movies and the numbers don't repeat themselves.</p>
             </div>

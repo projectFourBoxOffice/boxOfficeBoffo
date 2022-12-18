@@ -706,8 +706,8 @@ function App() {
 
     // this console log will return false when a value inside the rating array repeats itself and true when no value repeats itself inside that array
     // using every and indexOf method to determine whether there are no duplicates inside the array (iterative)
-    console.log(ratingArray.every((e, i, a) => a.indexOf(e) === i));
-    if (ratingArray.every((e, i, a) => a.indexOf(e) === i)) {
+    console.log(ratingArray.every((element, index, array) => array.indexOf(element) === index));
+    if (ratingArray.every((element, index, array) => array.indexOf(element) === index)) {
       let repeated = false;
       setRepetition(repeated);
       console.log(repetition);
@@ -721,12 +721,12 @@ function App() {
     setSubmitAttempt(true);
     
     // updating the states that we will use as conditions to determine whether to show the prediction list or not (or the submit message)
-    if (userMovies.length === 10 && ratingArray.every((e, i, a) => a.indexOf(e) === i) === true && !ratingArray.includes(undefined) && ratingArray.length === 10){
+    if (userMovies.length === 10 && ratingArray.every((element, index, array) => array.indexOf(element) === index) === true && !ratingArray.includes(undefined) && ratingArray.length === 10){
       setListSubmit(true);
       setSearchSubmit(false);
       setFaultySubmit(false);
     } 
-    else if (userMovies.length !== 10 && ratingArray.every((e, i, a) => a.indexOf(e) === i) === true && !ratingArray.includes(undefined)) {
+    else if (userMovies.length !== 10 && ratingArray.every((element, index, array) => array.indexOf(element) === index) === true && !ratingArray.includes(undefined)) {
       setFaultySubmit(true);
     }
     
