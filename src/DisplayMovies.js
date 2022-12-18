@@ -3,7 +3,7 @@
 import MoviePlaceholder from './movie_default.png';
 
 // passing in the value stored in the movies state as a prop and destructuring it
-const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached, userMovies, movieYear, clickedIdsHashMap, deleted, removed }) => {
+const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached, userMovies, movieYear, clickedIdsHashMap, deleted }) => {
 
     return(
         <section className='movieResults'>
