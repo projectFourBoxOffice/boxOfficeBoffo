@@ -706,6 +706,10 @@ function App() {
 
     // this console log will return false when a value inside the rating array repeats itself and true when no value repeats itself inside that array
     // using every and indexOf method to determine whether there are no duplicates inside the array (iterative)
+    // info about every method taken from: https://www.w3schools.com/jsref/jsref_every.asp
+    // info about indexOf method taken from: https://www.w3schools.com/jsref/jsref_indexof_array.asp
+    // every takes in an anonymous function with the current value asa required parameter, as well as the index of the current element and the array of that element as optional parameters, that returns the first index of the current value inside the array (in our case the ratingArray with the user input from the dropdown) and checks whether that first index of the current value is the same as the index(or indices) of that value (if the first index is not the same as the other index/indices, that means that the same value is also positioned at another index, which means it is duplicated)
+    // only true if all elements passed the test (ie. no element repeats itself (true); if at least one repeats itself, then it returns false)
     console.log(ratingArray.every((element, index, array) => array.indexOf(element) === index));
     if (ratingArray.every((element, index, array) => array.indexOf(element) === index)) {
       let repeated = false;
