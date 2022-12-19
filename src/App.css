@@ -6,9 +6,13 @@ html { box-sizing: border-box;}
 
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; border: 0; padding: 0; white-space: nowrap; clip-path: inset(100%); clip: rect(0 0 0 0); overflow: hidden;}
 
-/* general styles */
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Barlow&family=Montserrat:wght@700&display=swap');
+
+
 html {
   font-size: 125%;
+  background-color: #001d3d;
 }
 
 ul {
@@ -24,11 +28,16 @@ a {
   text-align: center;
 }
 
-
 .App-link {
-  color: #61dafb;
+  color: #2d0c30;
 }
 
+.wrapper {
+  margin: 0 auto;
+  max-width: 1200px;
+  width: 90%;
+
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -38,40 +47,110 @@ a {
   }
 }
 
-/* 
-/* Colours */
-
-/* html{
-  font-size: 125%;
-  background-color: #03367d;
+ul {
+  display: flex;
+  flex-wrap: wrap;
 }
 
-/* movieContainer */
-/* li{
-  background-color: #2671E0;
-} */
+li {
+  background-color: #012448;
+  width: calc(100% / 4);
+}
 
-/* 
+
 h1,
 p,
-button,
-li{
-  color: #56a4f9;
-} */
-/* 
+li,
+label {
+  color:#ffc300;
+  font-family: 'Barlow', sans-serif;
+}
+
+h1 {
+  text-transform: uppercase;
+  font-family: 'Montserrat', sans-serif;
+}
+
+button{
+  margin-bottom: 2rem;
+  background-color: #eae100;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
 li{ 
   padding: 2rem 0;
   margin: 2rem 0;
-} */
+}
 
-/* lighter */
-/* button{
-  margin-bottom: 2rem;
-  background-color: #56a4f9;
-} */
-/* 44c9fc */
-/* 
-button:hover{
-  background-color: #07a0db;
-}  */
-/* 11b9fa */
+label {
+  padding: 10px;
+}
+
+a:hover {
+  font-weight:bolder;
+}
+
+.chosenList {
+  width: 100%;
+  background-color: #001d3d;
+  padding: 0;
+  margin: 0;
+}
+
+.predictionList {
+ /* flex-direction: column; */
+ align-items: center;
+}
+
+.predictionList li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc((100% / 2) - 10px);
+  height: 180px;
+}
+
+.predictionList li:nth-child(1),
+.predictionList li:nth-child(3),
+.predictionList li:nth-child(5),
+.predictionList li:nth-child(7),
+.predictionList li:nth-child(9) {
+  margin-right: 10px;
+}
+
+select, .predictionList p {
+  margin-right: 20px;
+}
+
+select {
+  text-align: center;
+}
+
+footer {
+  margin-top: 80px;
+}
+
+.noMovies {
+  margin-top: 37%;
+}
+
+.removeButton {
+  margin-bottom: 0px;
+}
+
+.textContainer {
+  width: 40%;
+}
+
+.selectedNumber {
+  width: 50px;
+}
+
+.buttonContainer button {
+  width: calc((30% / 2) - 10px);
+}
+
+.buttonContainer button:first-child {
+  margin-right: 15px;
+}

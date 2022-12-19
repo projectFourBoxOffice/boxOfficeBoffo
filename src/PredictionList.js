@@ -5,7 +5,10 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
 
     return(
         <section className="predictionList">
-            <ul>
+            <div className="wrapper">
+
+            
+            <ul className="predictionList">
                 {/* {
                     ratedList.every((e, i, a) => a.indexOf(e) === i) === false && deleted === false && submitAttempt === false ?
                     <p>Sorry, make sure the numbers don't repeat themselves</p>
@@ -24,6 +27,7 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
                     value={userRating.userMovieTitle} 
                     onChange={e => handleMovieRating(e, movieObj.key)}
                     defaultValue={"default"}
+                    className={`${movieObj.rating === undefined || movieObj.rating === "" ? "" :  "selectedNumber"}`}
                     >
                         <option value={"default"} disabled>Pick a number</option>
                         <option value="1">1</option>
@@ -38,8 +42,13 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
                         <option value="10">10</option>
                     </select>
                     {/* since now the movie properties like id and title are nested inside the corresponding year, we are using movieYear (as a parameter in the map and here) */}
-                    <p>{movieObj.userMovieTitle}</p>
-                    <button onClick={() => handleRemoveClick(movieObj.key, movieObj.userMovieId)}>Remove</button>
+                    <div className="textContainer">
+                        <p>{movieObj.userMovieTitle}</p>
+                    </div>
+                    <button 
+                    onClick={() => handleRemoveClick(movieObj.key, movieObj.userMovieId)}
+                    className="removeButton"
+                    >Remove</button>
                 </li>
                 )
               })
@@ -68,16 +77,19 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
             </div>
             : null
             }
+            <div className="buttonContainer">
+            {
+            listSubmit === false && deleted === false && userMovies.length !== 0 ?
+            <button onClick={handleListSubmit} type="submit">Submit List</button>
+            : null
+            }
             {
             deleted === false && userMovies.length !== 0 ? 
             <button onClick={handleConfirm}>Delete List</button>
             : null
             }
-            {
-            listSubmit === false && deleted === false && userMovies.length !== 0 ?
-            <button onClick={handleListSubmit} type="submit">Submit</button>
-            : null
-            }
+            </div>
+            </div>
         </section>
     )
 }

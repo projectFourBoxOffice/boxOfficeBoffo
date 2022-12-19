@@ -838,6 +838,10 @@ function App() {
           // else: don't display anything
           : null
       }
+
+      <footer className={`${allFilteredMovies.length === 0 || listSubmit ? "noMovies" : ""} `}>
+          <p>Created @ <a href="https://junocollege.com/" target="_blank">Juno College of Technology</a></p>
+      </footer>
       
 
       {/* might have to store this inside another component PredictionList */}
