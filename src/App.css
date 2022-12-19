@@ -50,13 +50,21 @@ a {
 ul {
   display: flex;
   flex-wrap: wrap;
+  padding: 0 10px;
 }
 
+/* .movieResults ul{
+  border: 2px solid black;
+} */
+
 li {
-  background-color: #012448;
+  background-color: #012a53;
   width: calc(100% / 4);
 }
 
+.movieResults li{
+  margin-top: 0;
+}
 
 h1,
 p,
@@ -69,6 +77,10 @@ label {
 h1 {
   text-transform: uppercase;
   font-family: 'Montserrat', sans-serif;
+}
+
+.searchText{
+  padding: 3px 6px;
 }
 
 button{
@@ -153,4 +165,25 @@ footer {
 
 .buttonContainer button:first-child {
   margin-right: 15px;
+}
+
+.posterContainer{
+  height: 300px;
+}
+
+img{
+  height: 100%;
+}
+
+.titleContainer{
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 30px 10px 5px;
+}
+
+.titleContainer p{
+  height: 100%;
+  font-weight: bold;
 }

@@ -811,6 +811,7 @@ function App() {
           userMovies={userMovies}
           movieYear={movieYear}
           clickedIdsHashMap={clickedIdsHashMap}
+          loading={loading}
         />
         : null
       }

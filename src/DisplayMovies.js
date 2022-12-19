@@ -3,7 +3,7 @@
 import MoviePlaceholder from './movie_default.png';
 
 // passing in the value stored in the movies state as a prop and destructuring it
-const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached, userMovies, movieYear, clickedIdsHashMap, deleted }) => {
+const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached, userMovies, movieYear, clickedIdsHashMap, deleted, loading }) => {
 
     return(
         <section className='movieResults'>
@@ -14,14 +14,21 @@ const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached, 
                 {allFilteredMovies.map((movie) => {
                     return(
                         <li key={movie.id}>
+                            <div className="posterContainer">
                             {
                                 movie.poster_path ?
                                 <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} alt={`Poster for ${movie.original_title}`} />
+                                : movie.poster_path && loading ? 
+                                <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} alt="loading image"/>
                                 :
                                 // if no poster available, set a placeholder
                                 <img src={MoviePlaceholder} alt={`Placeholder poster for ${movie.original_title}`} />
                             }
-                            <p>{movie.original_title}</p>
+                            </div>
+                            <div className="titleContainer">
+                                <p>{movie.original_title}</p>
+                            </div>
+                            
                             {/* making sure the release date of the displayed movie results match the year of the user input */}
                             <p>{movie.release_date}</p>
                             <button
