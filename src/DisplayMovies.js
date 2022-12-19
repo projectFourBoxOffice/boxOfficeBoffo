@@ -14,7 +14,7 @@ const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached, 
                 {allFilteredMovies.map((movie) => {
                     return(
                         <li key={movie.id}>
-                            <div className="posterContainer">
+                            <div className={`${movie.poster_path ? "posterContainer" : "posterContainer placeholderContainer"}`}>
                             {
                                 movie.poster_path ?
                                 <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} alt={`Poster for ${movie.original_title}`} />

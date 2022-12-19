@@ -137,6 +137,9 @@ select, .predictionList p {
 
 select {
   text-align: center;
+  background-color: white;
+  border: 3px solid white;
+  border-radius: 5px;
 }
 
 footer {
@@ -149,6 +152,10 @@ footer {
 
 .removeButton {
   margin-bottom: 0px;
+}
+
+.searchBar{
+  margin-top: 20px;
 }
 
 .textContainer {
@@ -186,4 +193,103 @@ img{
 .titleContainer p{
   height: 100%;
   font-weight: bold;
+}
+
+.placeholderContainer img{
+  width: 250px;
+}
+
+/* Media Queries */
+
+@media(max-width: 1304px){
+  .movieResults li{
+    width: calc((100% / 3) - 10px);
+  }
+}
+
+@media (max-width: 1100px){
+  .predictionList li{
+    width: 100%;
+  }
+
+  .predictionList li:nth-child(1),
+  .predictionList li:nth-child(3),
+  .predictionList li:nth-child(5),
+  .predictionList li:nth-child(7),
+  .predictionList li:nth-child(9) {
+    margin-right: 0;
+  }
+
+  .titleContainer{
+    margin: 30px 25px 5px;
+  }
+}
+
+@media(max-width: 910px){
+  .movieResults li{
+    width: calc((100% / 2) - 10px);
+  }
+
+  .buttonContainer button{
+    width: calc((30% / 1.5) - 10px);
+  }
+}
+
+@media(max-width: 675px){
+  .buttonContainer button{
+    width: calc(25% - 10px);
+  }
+}
+
+@media(max-width: 550px){
+  .buttonContainer button{
+    width: calc(30% - 10px);
+  }
+
+  .predictionList p,
+  select{
+    margin-right: 10px;
+  }
+
+  .predictionList .textContainer{
+    width: 30%;
+  }
+
+  .movieResults li{
+    width: 100%;
+  }
+
+  select{
+    font-size: 0.9rem;
+  }
+}
+
+@media(max-width: 450px){
+  .searchText{
+    font-size: 0.9rem;
+  }
+
+  .predictionList .textContainer{
+    width: 90%;
+  }
+
+  .predictionList li{
+    flex-wrap: wrap;
+    height: 250px;
+  }
+
+  .buttonContainer button{
+    width: calc(40% - 10px);
+  }
+}
+
+@media (max-width: 350px){
+  .buttonContainer button,
+  .removeButton{
+    font-size: 0.9rem;
+  }
+
+  footer{
+    font-size: 0.9rem;
+  }
 }
