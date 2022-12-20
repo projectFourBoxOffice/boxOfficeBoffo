@@ -1,10 +1,10 @@
 // PredictionList component
 
-const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, handleRemoveClick, listSubmit, handleConfirm, handleListSubmit, handleMovieRating, userRating, repetition, submitAttempt, invalidInput, ratedList}) => {
+const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, handleRemoveClick, listSubmit, handleConfirm, handleListSubmit, handleMovieRating, userRating, repetition, submitAttempt, invalidInput, ratedList, dataCounter}) => {
 
 
     return(
-        <section className="predictionList">
+        <section className="predictionList" id="list">
             <div className="wrapper">
 
             
@@ -23,11 +23,12 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
                     <select 
                     name="selectedList" 
                     id="selectedList" 
-                    required 
-                    value={userRating.userMovieTitle} 
+                    required
+                    // setting the value of the select equal to the rating values from our database object (user input), so that user input still stays on the page even when user goes to a different year without having submitted his list for that year prior OR the default value (since if we define another defaultValue attribute with the value of default, the console will show an error because it only accepts one value attribute inside a select tag (but we still want to have the disabled option without a number as the default option that is automatically selected so that we can listen properly for when the user changes the value of the dropdown (1 won't get pushed into our database if it's already selected by default and the user won't know)))
+                    value={movieObj.rating || "default"}
                     onChange={e => handleMovieRating(e, movieObj.key)}
-                    defaultValue={"default"}
-                    className={`${movieObj.rating === undefined || movieObj.rating === "" ? "" :  "selectedNumber"}`}
+                    // comparing user rating (input value which would also include the default value) vs the rating property from our database object (which doesn't include that default value, only values from 1 to 10)
+                    className={`${movieObj.rating === undefined || movieObj.rating == "" ? "" : "selectedNumber" }`}
                     >
                         <option value={"default"} disabled>Pick a number</option>
                         <option value="1">1</option>
@@ -80,7 +81,7 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
             <div className="buttonContainer">
             {
             listSubmit === false && deleted === false && userMovies.length !== 0 ?
-            <button onClick={handleListSubmit} type="submit">Submit List</button>
+            <button onClick={() => handleListSubmit(userMovies)} type="submit">Submit List</button>
             : null
             }
             {
