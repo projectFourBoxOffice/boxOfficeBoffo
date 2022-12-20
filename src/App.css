@@ -149,12 +149,21 @@ a:hover {
 ul.submittedList li {
   justify-content: flex-start;
 }
+
+ul.submittedList li p:last-child {
+  margin: 0;
+  width: 100%;
+}
+
 ul.submittedList p:first-child {
   margin-left: 130px;
 }
 
+
+
 ul.submittedList .textContainer {
   width: fit-content;
+  margin-left: 50px;
 }
 
 .predictionList li {
