@@ -18,7 +18,7 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
             {userMovies.map((movieObj) => {
                 return(
                 // only showing values that are not undefined (if the user has submitted something, the movie rating inside that particular 10th object dedicated to the submitted property would be empty, else we still want the undefined values to show up since the user hasn't even chosen his value yet)
-                ratedList.find(item => item !== undefined) === movieObj.rating && userMovies[10] ? ""
+                ratedList.find(item => item === undefined) === movieObj.rating && userMovies[10] ? null
                 : 
                 // using our key for our firebase object as a key prop
                 <li key={movieObj.key}>
