@@ -25,7 +25,7 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                 </div>
                 {
                     searchSubmit ?
-                    <p className="searchText">You searched for summer movies from the year{movieYear}.</p>
+                    <p className="searchText">You searched for summer movies from the year {movieYear}.</p>
                     : null
                 }
                 {
