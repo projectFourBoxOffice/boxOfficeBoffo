@@ -61,7 +61,7 @@ import { getDatabase, ref, onValue, push, remove, update } from 'firebase/databa
 import { useState, useEffect } from 'react';
 
 // importing routing
-import { Link } from 'react-router-dom';
+import { Link, Route, Routes, useNavigate, useParams } from 'react-router-dom';
 
 // importing components
 import SearchForm from './SearchForm.js';
@@ -72,6 +72,8 @@ import PredictionList from './PredictionList.js'
 import './App.css';
 
 function App() {
+  const navigate = useNavigate();
+  // const {userName} = useParams();
   // state for the user input from the search bar (set to empty string by default)
   const [userSearch, setUserSearch] = useState("");
   // state for when the user has submitted the search form (default value false)
@@ -773,8 +775,20 @@ function App() {
       setDeleted(false);
     }
   }
+  const [userName, setUserName] = useState("");
 
-  
+  const userNameHandler = (event) => {
+    setUserName(event.target.value);
+    console.log(event.target.value);
+  }
+
+  const userSubmitHandler = (event) => {
+    event.preventDefault();
+
+    navigate(`/${userName}`);
+  }
+
+
   
 
   // next step: adding an input change handler for the dropdown numbers inside the prediction list
@@ -787,42 +801,53 @@ function App() {
     <div className="App">
       <header>
         <h1>Box Office Boffo</h1>
-        <form action="">
+        <form onSubmit={userSubmitHandler}>
           <label htmlFor="userName">Create your username to start the game</label>
-          <input type="text" id='userName' />
+          <input type="text" id='userName' onChange={userNameHandler} value={userName}/>
           <button type="submit">Start Game</button>
         </form>
       </header>
-      {/* form for the user to search for movies matching a release year */}
-      <SearchForm 
-        handleSearchSubmit={handleSearchSubmit}
-        handleSearchInput={handleSearchInput}
-        userSearch={userSearch}
-        movieYear={movieYear}
-        searchSubmit={searchSubmit}
-        loading={loading}
+      <Routes>
+      <Route
+        path={`/${userName}`}
+        children={() => (
+          <div>
+            {/* form for the user to search for movies matching a release year */}
+            <SearchForm 
+              handleSearchSubmit={handleSearchSubmit}
+              handleSearchInput={handleSearchInput}
+              userSearch={userSearch}
+              movieYear={movieYear}
+              searchSubmit={searchSubmit}
+              loading={loading}
+            />
+            {
+              searchSubmit ?
+              <DisplayMovies 
+                movies={movies}
+                filteredMovies={filteredMovies}
+                allFilteredMovies={allFilteredMovies}
+                handleClick={handleClick}
+                limitClick={limitClick}
+                // endReached={endReached}
+                handleRemoveClick={handleRemoveClick}
+                // firebaseKey={firebaseKey}
+                deleted={deleted}
+                userMovies={userMovies}
+                movieYear={movieYear}
+                clickedIdsHashMap={clickedIdsHashMap}
+                loading={loading}
+              />
+              : null
+            }
+          </div>
+        )}
       />
+      </Routes>
+
+      
 
       {/* only show the list of movie images and titles when the user has submitted the form */}
-      {
-        searchSubmit ?
-        <DisplayMovies 
-          movies={movies}
-          filteredMovies={filteredMovies}
-          allFilteredMovies={allFilteredMovies}
-          handleClick={handleClick}
-          limitClick={limitClick}
-          // endReached={endReached}
-          handleRemoveClick={handleRemoveClick}
-          // firebaseKey={firebaseKey}
-          deleted={deleted}
-          userMovies={userMovies}
-          movieYear={movieYear}
-          clickedIdsHashMap={clickedIdsHashMap}
-          loading={loading}
-        />
-        : null
-      }
       {
         clicked && listSubmit === false && searchSubmit ? 
         <PredictionList 
