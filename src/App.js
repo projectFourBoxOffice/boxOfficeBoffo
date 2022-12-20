@@ -809,8 +809,9 @@ function App() {
       </header>
       <Routes>
       <Route
-        path={`/${userName}`}
-        children={() => (
+        path="/:userName"
+        // element={ <div><SearchForm /> <DisplayMovies /></div> }
+        element={
           <div>
             {/* form for the user to search for movies matching a release year */}
             <SearchForm 
@@ -841,7 +842,7 @@ function App() {
               : null
             }
           </div>
-        )}
+        }
       />
       </Routes>
 

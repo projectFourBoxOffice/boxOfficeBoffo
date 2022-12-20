@@ -2,9 +2,13 @@
 // importing a placeholder img for movies without poster_path
 import MoviePlaceholder from './movie_default.png';
 
+import { useParams } from 'react-router-dom';
+
 // passing in the value stored in the movies state as a prop and destructuring it
 const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached, userMovies, movieYear, clickedIdsHashMap, deleted, loading }) => {
 
+    const {userName} = useParams();
+    console.log(userName);
     return(
         <section className='movieResults'>
             <div className="wrapper">
