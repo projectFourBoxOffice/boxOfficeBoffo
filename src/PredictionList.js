@@ -8,7 +8,7 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
             <div className="wrapper">
 
             
-            <ul className="predictionList">
+            <ul className={`${userMovies[10] === undefined ? "predictionList" : "submittedList"}`}>
                 {/* {
                     ratedList.every((e, i, a) => a.indexOf(e) === i) === false && deleted === false && submitAttempt === false ?
                     <p>Sorry, make sure the numbers don't repeat themselves</p>

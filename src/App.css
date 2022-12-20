@@ -22,15 +22,13 @@ ul {
 a {
   text-decoration: none;
   color: inherit;
+  display: inline-block;
 }
 
 .App {
   text-align: center;
 }
 
-.App-link {
-  color: #2d0c30;
-}
 
 .wrapper {
   margin: 0 auto;
@@ -74,20 +72,53 @@ label {
   font-family: 'Barlow', sans-serif;
 }
 
+label {
+  height: 125px;
+  display: inline-block;
+  line-height: 1.5;
+}
+
+header {
+  height: 165px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerContainer {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding-top: 50px;
+}
+
+.headerContainer p {
+  margin-top: 40px;
+}
+
 h1 {
   text-transform: uppercase;
   font-family: 'Montserrat', sans-serif;
+  margin: 0;
 }
 
 .searchText{
   padding: 3px 6px;
 }
 
-button{
+button,
+.searchText {
   margin-bottom: 2rem;
   background-color: #eae100;
   cursor: pointer;
   border-radius: 5px;
+}
+
+.userNotification a {
+  margin-top: 20px;
+  font-weight: 600;
 }
 
 li{ 
@@ -113,6 +144,18 @@ a:hover {
 .predictionList {
  /* flex-direction: column; */
  align-items: center;
+}
+
+/* styling for list when the user has submitted (no dropdown) */
+ul.submittedList li {
+  justify-content: flex-start;
+}
+ul.submittedList p:first-child {
+  margin-left: 130px;
+}
+
+ul.submittedList .textContainer {
+  width: fit-content;
 }
 
 .predictionList li {
@@ -156,6 +199,10 @@ footer {
 
 .searchBar{
   margin-top: 20px;
+}
+
+.searchBar input {
+  padding: 3px 2px;
 }
 
 .textContainer {

@@ -6,7 +6,7 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
     return(
         <div className="wrapper">
             <form onSubmit={handleSearchSubmit}>
-                <label htmlFor="userSearch">Search for summer movies between the years 1900 and 2022</label>
+                <label htmlFor="userSearch">Search for summer movies between the years 1900 and 2022. And then add 10 of those to a prediction list for the movies that you think were the highest grossing of that year. 1 stands for highest grossing and 10 for lowest grossing. You can only submit one list per year, so choose carefully. Anyway, have fun!!!</label>
                 <div className="searchBar">
                     {/* have an input with the type number so that the user can only search for a year */}
                     <input 
@@ -25,20 +25,21 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                 </div>
                 {
                     searchSubmit ?
-                    <p className="searchText">You searched for summer movies from the year {movieYear}.</p>
+                    <p>You searched for summer movies from the year {movieYear}.</p>
                     : null
                 }
                 {
                     userMovies.length === 10 && listSubmit === false && searchSubmit ?
-                    <div>
+                    <div className="userNotification">
                         <p>You already added 10 items to your list, but haven't submitted yet.</p>
                        <a 
                         href="#list" 
                         onClick={handleShowList}
+                        className="searchText"
                        >Show List</a> 
                     </div>
                     : userMovies.length < 10 && listSubmit === false && searchSubmit && userMovies.length !== 0 ?
-                    <div>
+                    <div className="userNotification">
                         {userMovies.length > 1 ? 
                         <p>You added {userMovies.length} items to your list, but haven't submitted yet.</p>
                         : <p>You added {userMovies.length} item to your list, but haven't submitted yet.</p>
@@ -46,13 +47,15 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                        <a 
                         href="#list" 
                         onClick={handleShowList}
+                        className="searchText"
                        >Show List</a> 
                     </div>
                     : userMovies[10] ?
-                    <div>
+                    <div className="userNotification">
                         <p>You already submitted a list for this year.</p>
                         <a
                         onClick={handleShowList}
+                        className="searchText"
                         href="#list"
                         >Show Results</a>
                     </div>

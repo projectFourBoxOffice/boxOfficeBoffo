@@ -1000,7 +1000,11 @@ function App() {
   return (
     <div className="App">
       <header>
-        <h1>Box Office Boffo</h1>
+        <div className="headerContainer">
+          <h1>Box Office Boffo</h1>
+          <p>Summer is here and we all know what that means!!!! Summer blockbuster movie time!</p>
+        </div>
+        
       </header>
       {/* form for the user to search for movies matching a release year */}
       <SearchForm 
