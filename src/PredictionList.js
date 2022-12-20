@@ -1,7 +1,39 @@
 // PredictionList component
+import { useParams } from 'react-router-dom';
+import { getDatabase, ref, onValue, push, remove, update } from 'firebase/database';
+import app from './firebase.js';
+import { useEffect, useState } from 'react';
 
 const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, handleRemoveClick, listSubmit, handleConfirm, handleListSubmit, handleMovieRating, userRating, repetition, submitAttempt, invalidInput, ratedList}) => {
 
+    
+    const {userNameParam} = useParams();
+    console.log(userNameParam);
+
+    const [userMovies, setUserMovies] = useState([]);
+
+    useEffect(() => {
+    
+        const database = getDatabase(app);
+        // const dbRef = ref(database);
+        // giving our database a reference under predictions (a bit more structured)
+        // nesting our soon to be declared object (click handler) inside a collection called Predictions that contains collections of the data invoked by the user per movieYear (adding in the movie info under the specific/matching year with the reference path) (referenced intro to firebase lesson from the notes)
+        // like this we already got the data sorted into different collections based on the year
+        const predictionRef = ref(database, `Predictions/${userNameParam}/${movieYear}/movies`);
+        
+        onValue( predictionRef, (response) => {
+          const data = response.val();
+          const newState = [];
+    
+          for(let key in data){
+            newState.push({key, ...data[key]});
+          }   
+          
+          setUserMovies(newState);
+          
+        })
+        // adding in movieYear state here inside the dependency array to avoid missing dependency error (thankfully not too hard on the data as opposed to the whole userMovies state array)
+      }, [movieYear])
 
     return(
         <section className="predictionList">

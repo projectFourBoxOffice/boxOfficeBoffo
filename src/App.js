@@ -61,18 +61,19 @@ import { getDatabase, ref, onValue, push, remove, update } from 'firebase/databa
 import { useState, useEffect } from 'react';
 
 // importing routing
-import { Link, Route, Routes, useNavigate, useParams } from 'react-router-dom';
+import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 
 // importing components
 import SearchForm from './SearchForm.js';
 import DisplayMovies from './DisplayMovies.js';
 import PredictionList from './PredictionList.js'
 // most likely gonna have another component for the prediction list (can also fetch the data in that same component?)
-
 import './App.css';
 
 function App() {
   const navigate = useNavigate();
+  const {userNameParam} = useParams();
+  console.log(userNameParam);
   // const {userName} = useParams();
   // state for the user input from the search bar (set to empty string by default)
   const [userSearch, setUserSearch] = useState("");
@@ -330,7 +331,7 @@ function App() {
   const handleClick = (e) => { 
     // so both the movieIdsArray and the the movie.idsArray (array of user ids added passed into object), don't seem to contain the id inside of the movie object from the API, but the targeted id of the button (even though the number is the same)
     setAllFilteredMovies(updatedMovies);
-
+    console.log(userNameParam);
     const comparedMovies = updatedMovies.map((movie) => {
       if (movie.original_title === e.target.value) {
         console.log(movie.idsArray);
@@ -367,7 +368,7 @@ function App() {
 
     // nesting our soon to be declared object inside a collection called Predictions that contains collections of data per movieYear (adding in the movie info under the specific/matching year with the reference path) (referenced intro to firebase lesson from the notes)
     // this seems to have solved the different lists per year issue
-    const predictionRef = ref(database, `Predictions/${movieYear}/movies`);
+    const predictionRef = ref(database, `Predictions/${userNameParam}/${movieYear}/movies`);
     
     // now we're adding the matching id and value (title and movie id into our database)
     const userMovieTitle = e.target.value;
@@ -489,7 +490,7 @@ function App() {
     // giving our database a reference under predictions (a bit more structured)
     // nesting our soon to be declared object (click handler) inside a collection called Predictions that contains collections of the data invoked by the user per movieYear (adding in the movie info under the specific/matching year with the reference path) (referenced intro to firebase lesson from the notes)
     // like this we already got the data sorted into different collections based on the year
-    const predictionRef = ref(database, `Predictions/${movieYear}/movies`);
+    const predictionRef = ref(database, `Predictions/:userNameParam/${movieYear}/movies`);
     
     onValue( predictionRef, (response) => {
       const data = response.val();
@@ -776,6 +777,7 @@ function App() {
     }
   }
   const [userName, setUserName] = useState("");
+  const [userNameSubmit, setUserNameSubmit] = useState(false);
 
   const userNameHandler = (event) => {
     setUserName(event.target.value);
@@ -784,12 +786,10 @@ function App() {
 
   const userSubmitHandler = (event) => {
     event.preventDefault();
-
+    setUserNameSubmit(true);
     navigate(`/${userName}`);
   }
 
-
-  
 
   // next step: adding an input change handler for the dropdown numbers inside the prediction list
 
@@ -801,15 +801,20 @@ function App() {
     <div className="App">
       <header>
         <h1>Box Office Boffo</h1>
+        {
+          userNameSubmit === false ? 
         <form onSubmit={userSubmitHandler}>
           <label htmlFor="userName">Create your username to start the game</label>
           <input type="text" id='userName' onChange={userNameHandler} value={userName}/>
           <button type="submit">Start Game</button>
         </form>
+        : null
+
+        }
       </header>
       <Routes>
       <Route
-        path="/:userName"
+        path="/:userNameParam"
         // element={ <div><SearchForm /> <DisplayMovies /></div> }
         element={
           <div>
@@ -841,6 +846,31 @@ function App() {
               />
               : null
             }
+            {/* only show the list of movie images and titles when the user has submitted the form            */}
+            {
+              clicked && listSubmit === false && searchSubmit ? 
+              <PredictionList 
+                userMovies={userMovies}
+                listSubmit={listSubmit}
+                handleRemoveClick={handleRemoveClick}
+                handleMovieRating={handleMovieRating}
+                handleListSubmit={handleListSubmit}
+                handleConfirm={handleConfirm}
+                faultySubmit={faultySubmit}
+                userRating={userRating}
+                deleted={deleted}
+                searchSubmit={searchSubmit}
+                repetition={repetition}
+                submitAttempt={submitAttempt}
+                invalidInput={invalidInput}
+                ratedList={ratedList}
+              />
+              // else if: the user has submitted the list, but not searched for a another year yet,             show a submit message
+              : listSubmit && ratedList.every((e, i, a) => a.indexOf(e) === i) === true &&            userRating !== "" && !ratedList.includes(undefined) && searchSubmit === false ? 
+                <p>Your List Has Been Submitted</p>
+                // else: don't display anything
+                : null
+            }
           </div>
         }
       />
@@ -848,31 +878,6 @@ function App() {
 
       
 
-      {/* only show the list of movie images and titles when the user has submitted the form */}
-      {
-        clicked && listSubmit === false && searchSubmit ? 
-        <PredictionList 
-          userMovies={userMovies}
-          listSubmit={listSubmit}
-          handleRemoveClick={handleRemoveClick}
-          handleMovieRating={handleMovieRating}
-          handleListSubmit={handleListSubmit}
-          handleConfirm={handleConfirm}
-          faultySubmit={faultySubmit}
-          userRating={userRating}
-          deleted={deleted}
-          searchSubmit={searchSubmit}
-          repetition={repetition}
-          submitAttempt={submitAttempt}
-          invalidInput={invalidInput}
-          ratedList={ratedList}
-        />
-        // else if: the user has submitted the list, but not searched for a another year yet, show a submit message
-        : listSubmit && ratedList.every((e, i, a) => a.indexOf(e) === i) === true && userRating !== "" && !ratedList.includes(undefined) && searchSubmit === false ? 
-          <p>Your List Has Been Submitted</p>
-          // else: don't display anything
-          : null
-      }
 
       <footer className={`${allFilteredMovies.length === 0 || listSubmit ? "noMovies" : ""} `}>
           <p>Created @ <a href="https://junocollege.com/" target="_blank" rel="noopener noreferrer">Juno College of Technology</a></p>
