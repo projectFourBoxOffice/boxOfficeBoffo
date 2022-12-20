@@ -132,16 +132,16 @@ function App() {
   let userTitleArray = [];
 
   // setting up an empty array for all the years where the user added a movie to his list
-  let yearArray = [];
+  // let yearArray = [];
 
-  let dataObj = [];
+  // let dataObj = [];
 
   const [submitAttempt, setSubmitAttempt] = useState(false);
   const [alreadySubmitted, setAlreadySubmitted] = useState("");
   const [submitted, setSubmitted] = useState("");
   
-  const [databaseObj, setDatabaseObj] = useState({});
-  const [databaseYear, setDatabaseYear] = useState("");
+  // const [databaseObj, setDatabaseObj] = useState({});
+  // const [databaseYear, setDatabaseYear] = useState("");
   const [dataCounter, setDataCounter] = useState(0);
   // state for text shown when user either has already added 10 items to his list
   // const end = "Added 10 items to the list";
@@ -365,6 +365,8 @@ function App() {
     setAllFilteredMovies(updatedMovies);
 
     const comparedMovies = updatedMovies.map((movie) => {
+      // console.log(targeted.id === movie.id);
+      // console.log(e.target.value === movie.original_title);
       if (movie.original_title === e.target.value) {
         console.log(movie.idsArray);
         console.log(movieIdsArray);
@@ -439,14 +441,14 @@ function App() {
       
       console.log(firebaseObj);
       // console.log(dataCounter);
-      setDatabaseObj(firebaseObj);
+      // setDatabaseObj(firebaseObj);
 
       
       
       // in order to access the year stored inside the entire object from our database (not inside the state array which only contains the movie data under the path of the selected movie year), we can use the pieces_ array stored inside the _path object which contains our current year at index 1
       // like this we can make sure that the buttons stay disabled based on whether there is already data stored for that particular year (meaning the user must have added a movie from that year to his list since the data only gets pushed/the node gets created in firebase when the user has clicked a button (we are pushing the data inside our click handler function))
       console.log(firebaseObj._path.pieces_[1]);
-      setDatabaseYear(firebaseObj._path.pieces_[1]);
+      // setDatabaseYear(firebaseObj._path.pieces_[1]);
 
       // getting the firebase key from our data object
       const firebaseKey = firebaseObj.key;
@@ -496,6 +498,8 @@ function App() {
     // issue: when one item at a time gets removed, the item that is still supposed to stay added (wasn't removed), still changes back to add to the list (only happens when another item gets removed)
     // was able to fix it, but theoretically this issue shouldn't be, there is a bit of a delay between the movie title from our API object and the value of the targeted button (should both be the same values)
     const removedMovies = updatedMovies.map((movie) => {
+      // console.log(userMovieId === movie.id);
+      // console.log(movie.original_title === userMovieTitle);
       if (movie.original_title === userMovieTitle) {
         console.log(movieIdsArray);
         // console.log(e.currentTarget.id, e.currentTarget.value);

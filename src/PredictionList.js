@@ -33,7 +33,7 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
                     value={movieObj.rating || "default"}
                     onChange={e => handleMovieRating(e, movieObj.key)}
                     // comparing user rating (input value which would also include the default value) vs the rating property from our database object (which doesn't include that default value, only values from 1 to 10)
-                    className={`${movieObj.rating === undefined || movieObj.rating == "" ? "" : "selectedNumber" }`}
+                    className={`${movieObj.rating === undefined || movieObj.rating === "" ? "" : "selectedNumber" }`}
                     >
                         <option value={"default"} disabled>Pick a number</option>
                         <option value="1">1</option>
