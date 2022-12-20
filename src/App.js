@@ -60,6 +60,9 @@ import { getDatabase, ref, onValue, push, remove, update } from 'firebase/databa
 // use effect for fetching our firebase data and preventing memory leak when user leaves the page
 import { useState, useEffect } from 'react';
 
+// importing routing
+import { Link } from 'react-router-dom';
+
 // importing components
 import SearchForm from './SearchForm.js';
 import DisplayMovies from './DisplayMovies.js';
@@ -1001,6 +1004,11 @@ function App() {
     <div className="App">
       <header>
         <h1>Box Office Boffo</h1>
+        <form action="">
+          <label htmlFor="userName">Create your username to start the game</label>
+          <input type="text" id='userName' />
+          <button type="submit">Start Game</button>
+        </form>
       </header>
       {/* form for the user to search for movies matching a release year */}
       <SearchForm 
