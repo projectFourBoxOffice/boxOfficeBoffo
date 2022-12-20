@@ -1001,8 +1001,10 @@ function App() {
     <div className="App">
       <header>
         <div className="headerContainer">
-          <h1>Box Office Boffo</h1>
-          <p>Summer is here and we all know what that means!!!! Summer blockbuster movie time!</p>
+          <div className="wrapper">
+            <h1>Box Office Boffo</h1>
+            <p>Summer is here and we all know what that means!!!! Summer blockbuster movie time!</p>
+          </div>
         </div>
         
       </header>
