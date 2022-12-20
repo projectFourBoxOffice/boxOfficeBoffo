@@ -478,11 +478,12 @@ function App() {
   }
 
   // click handler for remove button (for each single list item)
-  // pass in two parameters, one for the node to remove (the path under which the whole node for each list item lives) and another one for the user movie id (the id of the targeted add button)
-  const handleRemoveClick = (nodeToRemove, userMovieId) => {
+  // passing in three parameters, one for the node to remove (the path under which the whole node for each list item lives), one for the user movie id (the id of the targeted add button) and the user movie title (in order to compare the userMovieTitle from our object stored in our database with the original title of the movie from the API data)
+  const handleRemoveClick = (nodeToRemove, userMovieId, userMovieTitle) => {
     console.log(nodeToRemove);
     // console.log(userMovieId);
     console.log(userMovieId);
+    console.log(userMovieTitle);
     const database = getDatabase(app);
     const predictionRef = ref(database, `Predictions/${movieYear}/movies/${nodeToRemove}`);
     remove(predictionRef);
@@ -495,7 +496,7 @@ function App() {
     // issue: when one item at a time gets removed, the item that is still supposed to stay added (wasn't removed), still changes back to add to the list (only happens when another item gets removed)
     // was able to fix it, but theoretically this issue shouldn't be, there is a bit of a delay between the movie title from our API object and the value of the targeted button (should both be the same values)
     const removedMovies = updatedMovies.map((movie) => {
-      if (movie.idsArray.includes(targeted.id)) {
+      if (movie.original_title === userMovieTitle) {
         console.log(movieIdsArray);
         // console.log(e.currentTarget.id, e.currentTarget.value);
         console.log(movie.idsArray.includes(userMovieId));
@@ -503,6 +504,8 @@ function App() {
         console.log(movie.id, movie.original_title);
         console.log(targeted.id, targeted.value);
         console.log("Hello");
+        // use the clickedIdsHashMap state to grab the user movie id that is also equal to the id of the add button (representing the movie choice) and set the disabled property to false (in order to undo the disabling of that individual button that happens when the user has clicked on the movie already)
+        clickedIdsHashMap.get(userMovieId).disabled = false;
         let added = false;
         // setEndReached(start);
         // return {...movie, added: added};
@@ -522,8 +525,7 @@ function App() {
     setLimitClick(false);
    
   
-    // use the clickedIdsHashMap state to grab the user movie id that is also equal to the id of the add button (representing the movie choice) and set the disabled property to false (in order to undo the disabling of that individual button that happens when the user has clicked on the movie already)
-    clickedIdsHashMap.get(userMovieId).disabled = false;
+    
     // removeClickedIdsHashMap(userMovieId);
     clickedIdsHashMap.delete(userMovieId);
     console.log(clickedIdsHashMap);
@@ -816,7 +818,7 @@ function App() {
       console.log(alreadySubmitted);
     }
 
-    const addedMovies = updatedMovies.map((movie) => {
+    // const addedMovies = updatedMovies.map((movie) => {
       // console.log(movie.id);
       // console.log(movie.idsArray);
       // console.log(movie.idsArray.findIndex((element) => element === movie.id));
@@ -829,32 +831,32 @@ function App() {
       //   console.log(movie.idsArray.find(item => item === movie.id));
       //   console.log(movieIdsArray.find(item => item === movie.id));
       //   console.log(movie.idsArray.find(item => item === movie.id) === movieIdsArray.find(item => item === movie.id));
-        console.log(addCounter !== 0 && userTitleArray.find(item => item === movie.original_title) === movie.original_title);
-        if (addCounter !== 0 && movie.added === true) {
-          console.log(movie.idsArray);
-          console.log(movieIdsArray);
-          console.log(movieIdsArray.includes(movie.id));
-          console.log("Hello");
-          let added = true;
-          // return {...movie, added: added};
-          return {...movie, added: added};
-        }
-        console.log(addCounter === 10 && submitted === true);
-        if (addCounter === 10 && submitted === true) {
-          let submitted = true;
-          return {...movie, submitted: submitted};
-        }
-        else {
-          console.log("Really?");
-        }
-        return movie;
+      //   console.log(addCounter !== 0 && userTitleArray.find(item => item === movie.original_title) === movie.original_title);
+      //   if (addCounter !== 0 && movie.added === true) {
+      //     console.log(movie.idsArray);
+      //     console.log(movieIdsArray);
+      //     console.log(movieIdsArray.includes(movie.id));
+      //     console.log("Hello");
+      //     let added = true;
+      //     // return {...movie, added: added};
+      //     return {...movie, added: added};
+      //   }
+      //   console.log(addCounter === 10 && submitted === true);
+      //   if (addCounter === 10 && submitted === true) {
+      //     let submitted = true;
+      //     return {...movie, submitted: submitted};
+      //   }
+      //   else {
+      //     console.log("Really?");
+      //   }
+      //   return movie;
      
       
-      })
+      // })
       
-    console.log(addedMovies);
-    setAllFilteredMovies(addedMovies);
-    console.log(allFilteredMovies);
+    // console.log(addedMovies);
+    // setAllFilteredMovies(addedMovies);
+    // console.log(allFilteredMovies);
     // clearing the userSearch value, so that search bar gets cleared after each submission
     // maybe better not to clear the user input after submission sicne the user can use the arrows in the input to go up or down a year from the previous search input (more convenient possibly)
     // setUserSearch("");
@@ -940,6 +942,34 @@ function App() {
       let addCounter = 0;
       console.log(addCounter);
       setDataCounter(addCounter);
+
+      const deletedMovies = updatedMovies.map((movie) => {
+        // if (movie.idsArray.includes(targeted.id)) {
+        //   console.log(movieIdsArray);
+        //   // console.log(e.currentTarget.id, e.currentTarget.value);
+        //   // console.log(movie.idsArray.includes(userMovieId));
+        //   // console.log(userMovieId, selectedTitle);
+        //   console.log(movie.id, movie.original_title);
+        //   console.log(targeted.id, targeted.value);
+        //   console.log("Hello");
+          // use the clickedIdsHashMap state to grab the user movie id that is also equal to the id of the add button (representing the movie choice) and set the disabled property to false (in order to undo the disabling of that individual button that happens when the user has clicked on the movie already)
+          // clickedIdsHashMap.get(userMovieId).disabled = false;
+          let added = false;
+          // setEndReached(start);
+          // return {...movie, added: added};
+          return {...movie, added: added};
+        // }
+        
+        // else {
+        //   console.log("Really?");
+        //   // return {...movie, added: true};
+        //   // setEndReached("");
+        // }
+        // return movie;
+      })
+      console.log(deletedMovies);
+      setAllFilteredMovies(deletedMovies);
+
     } else {
       setDeleted(false);
     }
@@ -951,9 +981,9 @@ function App() {
     setClicked(true);
     console.log(clicked);
     setSearchSubmit(true);
-    setListSubmit(false);
-    setSubmitAttempt(false);
-    setFaultySubmit(false);
+    // setListSubmit(false);
+    // setSubmitAttempt(false);
+    // setFaultySubmit(false);
   }
   
 
@@ -1009,8 +1039,9 @@ function App() {
         />
         : null
       }
+      {/* only showing the list if either a corresponding button has been clicked and a year has been searched for and only when the user hasn't submitted a list for that year yet (only show results when the user has submitted, so mapping through the object again but instead of the dropdown just numbers) */}
       {
-        clicked && listSubmit === false && searchSubmit && userMovies[10] === undefined ? 
+        clicked && listSubmit === false && searchSubmit ? 
         <PredictionList 
           userMovies={userMovies}
           listSubmit={listSubmit}

@@ -17,9 +17,14 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
                 } */}
             {userMovies.map((movieObj) => {
                 return(
+                // only showing values that are not undefined (if the user has submitted something, the movie rating inside that particular 10th object dedicated to the submitted property would be empty, else we still want the undefined values to show up since the user hasn't even chosen his value yet)
+                ratedList.find(item => item !== undefined) === movieObj.rating && userMovies[10] ? ""
+                : 
                 // using our key for our firebase object as a key prop
                 <li key={movieObj.key}>
                     {/* still have to add an onChange and a value set to the user selection of the number input  */}
+                    {
+                    userMovies[10] === undefined ?
                     <select 
                     name="selectedList" 
                     id="selectedList" 
@@ -42,19 +47,32 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
                         <option value="9">9</option>
                         <option value="10">10</option>
                     </select>
+                    : ratedList.find(item => item === undefined) === movieObj.rating ? "" :
+                    <p>{movieObj.rating}</p>
+                    }
+                    
                     {/* since now the movie properties like id and title are nested inside the corresponding year, we are using movieYear (as a parameter in the map and here) */}
                     <div className="textContainer">
                         <p>{movieObj.userMovieTitle}</p>
                     </div>
+                    {/* we don't want to have a remove button present when the user has already submitted his list since he shouldn't be able to change it after submissiom */}
+                    {
+                    userMovies[10] === undefined ?
                     <button 
-                    onClick={() => handleRemoveClick(movieObj.key, movieObj.userMovieId)}
+                    onClick={() => handleRemoveClick(movieObj.key, movieObj.userMovieId, movieObj.userMovieTitle)}
                     className="removeButton"
                     >Remove</button>
+                    : null  
+                    }
+                    
                 </li>
+
+                
                 )
               })
             }
             </ul>
+
             {
             faultySubmit && deleted === false && ratedList.every((element, index, array) => array.indexOf(element) === index) === true && submitAttempt && !ratedList.includes(undefined) ? 
             <div>
@@ -78,18 +96,24 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
             </div>
             : null
             }
+            {
+            userMovies[10] === undefined ?
             <div className="buttonContainer">
-            {
-            listSubmit === false && deleted === false && userMovies.length !== 0 ?
-            <button onClick={() => handleListSubmit(userMovies)} type="submit">Submit List</button>
-            : null
-            }
-            {
-            deleted === false && userMovies.length !== 0 ? 
-            <button onClick={handleConfirm}>Delete List</button>
-            : null
-            }
+                {
+                listSubmit === false && deleted === false && userMovies.length !== 0 ?
+                <button onClick={() => handleListSubmit(userMovies)} type="submit">Submit List</button>
+                : null
+                }
+                {
+                deleted === false && userMovies.length !== 0 ? 
+                <button onClick={handleConfirm}>Delete List</button>
+                : null
+                }
+            {/* another idea: go back to top anchor tag (styled like a button) to have user be able to navigate more easily throughout movie options and list */}
             </div>
+            : null
+            }
+           
             </div>
         </section>
     )

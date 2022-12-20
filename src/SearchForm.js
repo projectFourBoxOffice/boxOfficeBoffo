@@ -25,11 +25,11 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                 </div>
                 {
                     searchSubmit ?
-                    <p className="searchText">You searched for summer movies from the year {movieYear}.</p>
+                    <p className="searchText">You searched for summer movies from the year{movieYear}.</p>
                     : null
                 }
                 {
-                    userMovies.length === 10 && listSubmit === false && searchSubmit && submitted === "" ?
+                    userMovies.length === 10 && listSubmit === false && searchSubmit ?
                     <div>
                         <p>You already added 10 items to your list, but haven't submitted yet.</p>
                        <a 
@@ -37,7 +37,7 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                         onClick={handleShowList}
                        >Show List</a> 
                     </div>
-                    : userMovies.length < 10 && listSubmit === false && searchSubmit && submitted === "" && userMovies.length !== 0 ?
+                    : userMovies.length < 10 && listSubmit === false && searchSubmit && userMovies.length !== 0 ?
                     <div>
                         {userMovies.length > 1 ? 
                         <p>You added {userMovies.length} items to your list, but haven't submitted yet.</p>
@@ -51,7 +51,10 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                     : userMovies[10] ?
                     <div>
                         <p>You already submitted a list for this year.</p>
-                        <button>Show Results</button>
+                        <a
+                        onClick={handleShowList}
+                        href="#list"
+                        >Show Results</a>
                     </div>
                     : null
                 }

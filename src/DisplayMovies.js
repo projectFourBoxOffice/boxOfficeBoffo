@@ -41,8 +41,8 @@ const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached, 
                                 disabled={dataCounter === 10 || userMovies.length === 10 || userMovies[10] ? true : limitClick}
                                 // disabled={limitClick || (clickedIdsHashMap.get(movie.id) === 1 ? true : false)}
                             >
-                                {/* also make sure that added button stays disabled when user goes to next year without having submitted and returns back to that year, so that he knows that that particular item has been added */}
-                            {movie.added === true && userMovies.length < 10 && deleted === false && listSubmit === false ? 
+                            {/* also make sure that added button stays disabled when user goes to next year without having submitted and returns back to that year, so that he knows that that particular item has been added */}
+                            {movie.added === true && userMovies.length < 10 ? 
                                 <>Added</>
                                 // : userIdsArray.find(item => item === movie.id) === movie.id && dataCounter !== 0 && dataCounter !== 10 && listSubmit === false ?
                                 // <>Added</>
