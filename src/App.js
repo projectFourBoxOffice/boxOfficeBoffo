@@ -850,8 +850,6 @@ function App() {
 
       {/* only show the list of movie images and titles when the user has submitted the form */}
       {
-=======
->>>>>>> fdee0e5348e83057540fa3cbb90759214d548ad8
         clicked && listSubmit === false && searchSubmit ? 
         <PredictionList 
           userMovies={userMovies}
