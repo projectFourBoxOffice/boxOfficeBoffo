@@ -92,6 +92,7 @@ function App() {
   const [faultySubmit, setFaultySubmit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userRating, setUserRating] = useState('');
+  const [error, setError] = useState(false);
 
   // hashmap for individual button target
   // state clickedIds
@@ -120,6 +121,7 @@ function App() {
 
   // async function getMovies to make the API call (calling that function in the submit handler)
   const getMovies = async () => {
+    try {
     // using the discover/movie endpoint in order to get the movie data with the year property and without the required query param (in the movie/search endpoint the query param would be a requirement which we don't want in our case, the user is looking for movie titles based on the release_year and not the other way around)
     setLoading(true);
 
@@ -149,7 +151,7 @@ function App() {
 
       // setting loading to false once API data is received
       setLoading(false);
-
+      setError(false);
       // need to filter by month (getMonth()) and day of the month (use the getDate() method for that)
       // need to add in a month property to our movies array (mapping), so that we can then filter out the movies that don't fall between May (value of 4) and September (value of 8) with the .filter method (since our data comes in a array of objects)
       const moviesWithMonthDay = data.results.map((movie) => {
@@ -196,9 +198,13 @@ function App() {
       }
 
     }
-
     // set counter back to default value 0 after while loop is done
     counter = 0;
+   } 
+   catch (error) {
+    setLoading(false);
+    setError(true);
+   }
   }
 
   // defining a counter for each time data gets pushed, updating that counter's value inside the for in loop of our state array containing our data object from firebase (like this we can determine whether the user has already added a movie in that particular year, starts anew for each year and also updates accordingly when item gets removed)
@@ -485,6 +491,7 @@ function App() {
         listSubmit={listSubmit}
         userMovies={userMovies}
         handleShowList={handleShowList}
+        error={error}
       />
 
       {/* only show the list of movie images and titles when the user has submitted the form */}
