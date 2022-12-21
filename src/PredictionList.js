@@ -2,7 +2,6 @@
 
 const PredictionList = ({userMovies, faultySubmit, deleted, handleRemoveClick, listSubmit, handleConfirm, handleListSubmit, handleMovieRating, submitAttempt, ratedList, showClicked}) => {
 
-
     return(
         <section className="predictionList" id="list">
             <div className="wrapper">
@@ -11,10 +10,7 @@ const PredictionList = ({userMovies, faultySubmit, deleted, handleRemoveClick, l
             <p>Your Results</p>
             : null
             }
-
-            <ul className={`${userMovies[10] === undefined ? "predictionList" : "submittedList"}`}>
-                
-                
+            <ul className={`${userMovies[10] === undefined ? "predictionList" : "submittedList"}`}> 
             {userMovies.map((movieObj) => {
                 return(
                 // only showing values that are not undefined (if the user has submitted something, the movie rating inside that particular 10th object dedicated to the submitted property would be empty, else we still want the undefined values to show up since the user hasn't even chosen his value yet)
@@ -50,12 +46,9 @@ const PredictionList = ({userMovies, faultySubmit, deleted, handleRemoveClick, l
                     : ratedList.find(item => item === undefined) === movieObj.rating ? "" :
                     <p>{movieObj.rating}</p>
                     }
-                    
-                    {/* since now the movie properties like id and title are nested inside the corresponding year, we are using movieYear (as a parameter in the map and here) */}
                     <div className="textContainer">
                         <p>{movieObj.userMovieTitle}</p>
                     </div>
-                    {/* we don't want to have a remove button present when the user has already submitted his list since he shouldn't be able to change it after submissiom */}
                     {
                     userMovies[10] === undefined ?
                     <button 
@@ -64,10 +57,7 @@ const PredictionList = ({userMovies, faultySubmit, deleted, handleRemoveClick, l
                     >Remove</button>
                     : null  
                     }
-                    
                 </li>
-
-                
                 )
               })
             }
@@ -109,7 +99,6 @@ const PredictionList = ({userMovies, faultySubmit, deleted, handleRemoveClick, l
                 <button onClick={handleConfirm}>Delete List</button>
                 : null
                 }
-            {/* another idea: go back to top anchor tag (styled like a button) to have user be able to navigate more easily throughout movie options and list */}
             </div>
             : null
             }

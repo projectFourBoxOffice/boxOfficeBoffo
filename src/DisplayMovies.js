@@ -3,13 +3,13 @@
 import MoviePlaceholder from './movie_default.png';
 
 // Passing in the value stored in the movies state as a prop and destructuring it
-const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached, userMovies, movieYear, clickedIdsHashMap, deleted, loading, dataCounter, userIdsArray, listSubmit, alreadySubmitted, submitted }) => {
+const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, userMovies, deleted, loading, dataCounter, listSubmit}) => {
 
     return(
         <section className='movieResults'>
             <div className="wrapper">
-            <p>Total results: {allFilteredMovies.length}</p>
-            <ul>
+              <p>Total results: {allFilteredMovies.length}</p>
+              <ul>
                 {/* Mapping through our movies state array (containing all of our relevant movie info and data) */}
                 {allFilteredMovies.map((movie) => {
                     return(
@@ -52,14 +52,12 @@ const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached, 
                                 : userMovies[10] ?
                                 <>Already submitted</>
                                 : <>Add to the list</>
-
                             }
-                            </button>
-                           
+                            </button>          
                         </li>
                     )
                 })}
-            </ul>
+              </ul>
             </div>
         </section>
     )
