@@ -77,22 +77,22 @@ function App() {
   const [allFilteredMovies, setAllFilteredMovies] = useState([]);
   // Year state to use for later so that the user knows what year he searched for the summer movies (since user input gets cleared after each submission, needed to find a different alternative to display it onto the page when the user has already submitted), gets value inside the filtering of the copy of the all movies array since if it were done during the mapping of the all movies array, it wouldn't have a value yet (can't do it after the return statement)
   const [movieYear, setMovieYear] = useState("");
-  const [ userMovies, setUserMovies] = useState([]);
-  const [ clicked, setClicked] = useState(false);
+  const [userMovies, setUserMovies] = useState([]);
+  const [clicked, setClicked] = useState(false);
   const [listSubmit, setListSubmit] = useState(false);
   const [limitClick, setLimitClick] = useState(false);
   const [repetition, setRepetition] = useState(false);
   const [invalidInput, setInvalidInput] = useState(false);
   const [ratedList, setRatedList] = useState([]);
-  const [ deleted, setDeleted] = useState(false);
-  const [ faultySubmit, setFaultySubmit] = useState(false);
+  const [deleted, setDeleted] = useState(false);
+  const [faultySubmit, setFaultySubmit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userRating, setUserRating] = useState('');
   // Hashmap for individual button target
   const [clickedIdsHashMap, setClickedIdsHashMap] = useState(new Map());
   // State for targeted click button
-  const [targeted, setTargeted] = useState("");
-  const [selectedTitle, setSelectedTitle] = useState("");
+  // const [targeted, setTargeted] = useState("");
+  // const [selectedTitle, setSelectedTitle] = useState("");
 
   // Empty array for the user movie ids (using for later to compare if that array contains current id of the movie chosen by the user)
   let movieIdsArray = [];
@@ -245,12 +245,12 @@ function App() {
 
     // Nesting our soon to be declared object inside a collection called Predictions that contains collections of data per movieYear (adding in the movie info under the specific/matching year with the reference path)
     // This seems to have solved the different lists per year issue
-    const dataRef = ref(database, `Predictions/${movieYear}`);
+    // const dataRef = ref(database, `Predictions/${movieYear}`);
     const predictionRef = ref(database, `Predictions/${movieYear}/movies`);    
     // Now we're adding the matching id and value (title and movie id into our database)
     const userMovieTitle = e.target.value;
     const userMovieId = e.target.id;
-    setSelectedTitle(e.target.value);
+    // setSelectedTitle(e.target.value);
         
     // Defining our object that we are going to push into our database
     const listedMovie = {
@@ -265,13 +265,13 @@ function App() {
     // Only pushing the selected movie by the user to our database if the selected movie's id doesn't repeat itself and there are less than 10 items (so that user can only add 10 items to his list)
     if (!movieIdsArray.includes(userMovieId) && movieIdsArray.length <= 10) {
       // Pushing our object into our database, while at the same time storing that inside a variable to then use in order to access our key from firebase (using that for when we map through our state userMovies containing all the data later on)
-      const firebaseObj = push(predictionRef, listedMovie);
+      push(predictionRef, listedMovie);
           
       // In order to access the year stored inside the entire object from our database (not inside the state array which only contains the movie data under the path of the selected movie year), we can use the pieces_ array stored inside the _path object which contains our current year at index 1
       // Like this we can make sure that the buttons stay disabled based on whether there is already data stored for that particular year (meaning the user must have added a movie from that year to his list since the data only gets pushed/the node gets created in firebase when the user has clicked a button (we are pushing the data inside our click handler function))
 
       // Getting the Firebase key from our data object
-      const firebaseKey = firebaseObj.key;
+      // const firebaseKey = firebaseObj.key;
     } 
     if (userMovies.length >= 9 && !movieIdsArray.includes(userMovieId)) {
       setLimitClick(true);
@@ -280,7 +280,7 @@ function App() {
 
     // Set the disabled property of the current targeted event (in this case the currently clicked button by the user) to true in order to only disable one button out of all the add buttons for each movies (that are inside the map function)
     e.currentTarget.disabled = true;
-    setTargeted(e.currentTarget);
+    // setTargeted(e.currentTarget);
   }
 
   // Click handler for remove button (for each single list item)
@@ -418,7 +418,7 @@ function App() {
       const database = getDatabase(app);
       // Referencing the movieYear as the last path since we don't want to have the submitted property for each movie but for each year (each list per year)
       const predictionRef = ref(database, `Predictions/${movieYear}/movies`);
-      const submitObj = update(predictionRef, listSubmission);
+      update(predictionRef, listSubmission);
       const submissionRef =  ref(database, `Predictions/${movieYear}/${submitted}`);
       const submissionObj = submissionRef._path.pieces_[2];
       setSubmitted(submissionObj);
