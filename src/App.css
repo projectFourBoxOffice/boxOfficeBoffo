@@ -78,6 +78,7 @@ header {
   justify-content: center;
   flex-direction: column;
   padding-top: 70px;
+  width: 100%;
 }
 
 .headerContainer p {
@@ -113,11 +114,14 @@ li {
 }
 
 label {
-  padding: 10px;
+  padding: 15px;
   margin-top: 20px;
-  height: 125px;
   display: inline-block;
   line-height: 1.5;
+  background: #ffc300;
+  color: #001d3d;
+  font-weight: 600;
+  border-radius: 20px;
 }
 
 a:hover {
@@ -292,6 +296,14 @@ img {
 @media(max-width: 675px) {
   .buttonContainer button {
     width: calc(25% - 10px);
+  }
+  ul.submittedList .textContainer,
+  ul.submittedList p:first-child {
+    margin-left: 0;
+  }
+  ul.submittedList li {
+    justify-content: center;
+    flex-direction: column;
   }
 }
 
