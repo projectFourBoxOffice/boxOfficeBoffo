@@ -645,7 +645,7 @@ function App() {
         <div className="headerContainer">
           <div className="wrapper">
             <h1>Box Office Boffo</h1>
-            <p>Summer is here and we all know what that means!!!! Summer blockbuster movie time!</p>
+            <p>Summer is here and so are the summer blockbuster movies!</p>
           </div>
         </div>
         

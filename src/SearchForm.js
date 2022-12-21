@@ -6,7 +6,7 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
     return(
         <div className="wrapper">
             <form onSubmit={handleSearchSubmit} id="search">
-                <label htmlFor="userSearch">Search for summer movies between the years 1900 and 2022. Then add 10 of those to a prediction list for the movies that you think were the highest grossing of that year. 1 stands for highest grossing and 10 for lowest grossing. You can only submit one list per year, so choose carefully. Anyway, have fun!!!</label>
+                <label htmlFor="userSearch">Search for summer movies between the years 1900 and 2022, add 10 movies to your prediction list that you think were the highest grossing of that year, and then order them from highest grossing (10) to lowest grossing (1). You can only submit one list per year. Have fun!</label>
                 <div className="searchBar">
                     {/* have an input with the type number so that the user can only search for a year */}
                     <input 
