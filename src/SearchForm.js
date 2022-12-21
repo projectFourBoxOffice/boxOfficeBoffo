@@ -1,7 +1,13 @@
 // Search Form component for search bar
 
+// importing state
+// import { useState } from "react";
+
 // passing in the values stored inside submit handler, change handler and userSearch state (with user input value) as props and destructuring them
-const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYear, searchSubmit, loading, listSubmit, dataCounter, userMovies, handleShowList, alreadySubmitted, submitted}) => {
+const SearchForm = ( {handleSearchSubmit, movieYear, searchSubmit, loading, listSubmit, userMovies, handleShowList, handleSearchInput, userSearch} ) => {
+
+    // states
+    // const [userSearch, setUserSearch] = useState("");
 
     return(
         <div className="wrapper">
@@ -24,41 +30,40 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                     <button className="searchText" type="submit">{loading ? <>Loading..</> : <>Search</>}</button>
                 </div>
                 {
-                    searchSubmit ?
-                    <p className="searchText">You searched for summer movies from the year {movieYear}.</p>
-                    : null
+                searchSubmit ?
+                <p className="searchText">You searched for summer movies from the year {movieYear}.</p>
+                : null
                 }
                 {
-                    userMovies.length === 10 && listSubmit === false && searchSubmit ?
-                    <div>
-                        <p>You already added 10 items to your list, but haven't submitted yet.</p>
-                       <a 
-                        href="#list" 
-                        onClick={handleShowList}
-                       >Show List</a> 
-                    </div>
-                    : userMovies.length < 10 && listSubmit === false && searchSubmit && userMovies.length !== 0 ?
-                    <div>
-                        {userMovies.length > 1 ? 
-                        <p>You added {userMovies.length} items to your list, but haven't submitted yet.</p>
-                        : <p>You added {userMovies.length} item to your list, but haven't submitted yet.</p>
-                        }
-                       <a 
-                        href="#list" 
-                        onClick={handleShowList}
-                       >Show List</a> 
-                    </div>
-                    : userMovies[10] ?
-                    <div>
-                        <p>You already submitted a list for this year.</p>
-                        <a
-                        onClick={handleShowList}
-                        href="#list"
-                        >Show Results</a>
-                    </div>
-                    : null
+                userMovies.length === 10 && listSubmit === false && searchSubmit ?
+                <div>
+                    <p>You already added 10 items to your list, but haven't submitted yet.</p>
+                    <a 
+                    href="#list" 
+                    onClick={handleShowList}
+                    >Show List</a> 
+                </div>
+                : userMovies.length < 10 && listSubmit === false && searchSubmit && userMovies.length !== 0 ?
+                <div>
+                    {userMovies.length > 1 ? 
+                    <p>You added {userMovies.length} items to your list, but haven't submitted yet.</p>
+                    : <p>You added {userMovies.length} item to your list, but haven't submitted yet.</p>
+                    }
+                    <a 
+                    href="#list" 
+                    onClick={handleShowList}
+                    >Show List</a> 
+                </div>
+                : userMovies[10] ?
+                <div>
+                    <p>You already submitted a list for this year.</p>
+                    <a
+                    onClick={handleShowList}
+                    href="#list"
+                    >Show Results</a>
+                </div>
+                : null
                 }
-            
             </form>
         </div>
     )

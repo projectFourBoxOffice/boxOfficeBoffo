@@ -1,14 +1,100 @@
 // Display Movies component to return data from our API call
+
 // importing a placeholder img for movies without poster_path
 import MoviePlaceholder from './movie_default.png';
 
+// importing firebase
+import app from './firebase.js';
+import { getDatabase, ref, onValue, push } from 'firebase/database';
+
+// importing useState and useEffect
+import { useEffect } from 'react';
+
+// importing useParams
 import { useParams } from 'react-router-dom';
 
 // passing in the value stored in the movies state as a prop and destructuring it
-const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached, userMovies, movieYear, clickedIdsHashMap, deleted, loading, dataCounter, userIdsArray, listSubmit, alreadySubmitted, submitted }) => {
+const DisplayMovies = ( {allFilteredMovies, handleClick, limitClick, deleted, loading, dataCounter, listSubmit, movieIdsArray, movieYear, updateClickedIdsHashMap, clickedIdsHashMap, setUserMovies, userMovies} ) => {
 
+    // destructuring our useParams object
     const {userName} = useParams();
     console.log(userName);
+
+    // state
+    // const [userMovies, setUserMovies] = useState([]);
+
+    // useEffect to get our data object from firebase
+    useEffect(() => {
+    
+        const database = getDatabase(app);
+        // const dbRef = ref(database);
+        // giving our database a reference under predictions (a bit more structured)
+        // nesting our soon to be declared object (click handler) inside a collection called Predictions that contains collections of the data invoked by the user per movieYear (adding in the movie info under the specific/matching year with the reference path) (referenced intro to firebase lesson from the notes)
+        // like this we already got the data sorted into different collections based on the year
+        const predictionRef = ref(database, `Predictions/${userName}/${movieYear}/movies`);
+        
+        onValue( predictionRef, (response) => {
+          const data = response.val();
+          const newState = [];
+    
+          for(let key in data){
+            newState.push({key, ...data[key]});
+          }   
+          
+          setUserMovies(newState);
+          
+        })
+        // adding in movieYear state here inside the dependency array to avoid missing dependency error (thankfully not too hard on the data as opposed to the whole userMovies state array)
+      }, [movieYear, userName])
+
+    // click handler for add to list button (passing in click handler from App.js as a prop and calling that function)
+    const handleAddClick = (e) => {
+        handleClick(e);
+        const database = getDatabase(app);
+        // const dbRef = ref(database);
+
+        // nesting our soon to be declared object inside a collection called Predictions that contains collections of data per movieYear (adding in the movie info under the specific/matching year with the reference path) (referenced intro to firebase lesson from the notes)
+        // this seems to have solved the different lists per year issue
+        const predictionRef = ref(database, `Predictions/${userName}/${movieYear}/movies`);
+        
+        // now we're adding the matching id and value (title and movie id into our database)
+        const userMovieTitle = e.target.value;
+        const userMovieId = e.target.id;
+        // let rating = null;
+        
+        console.log(e.target.value);
+        console.log(e.target.id);
+
+        // used this video as a reference for nesting properties inside our database
+        // https://www.youtube.com/watch?v=OlyA7Q0qPPE
+            
+        // defining our object that we are going to push into our database
+        const listedMovie = {
+        userMovieTitle,
+        userMovieId
+        // rating
+        }
+
+        // only pushing the selected movie by the user to our database if the selected movie's id doesn't repeat itself and there are less than 10 items (so that user can only add 10 items to his list)
+        if (!movieIdsArray.includes(userMovieId) && movieIdsArray.length <= 10) {
+            console.log(movieIdsArray);
+            // pushing our object into our database, while at the same time storing that inside a variable to then use in order to access our key from firebase (using that for when we map through our state userMovies containing all the data later on)
+            const firebaseObj = push(predictionRef, listedMovie);
+            console.log(firebaseObj);
+    
+            // getting the firebase key from our data object
+            const firebaseKey = firebaseObj.key;
+            console.log(firebaseKey);
+            // setLimitClick(false);
+        }
+     
+        // calling the hash map function
+        // pass in the user movie id (id of the movie the user has chosen to add to his list) and the targeted event (the add button) as arguments inside that function to then use that for later when removing the items from the list and setting the disabled property back to false for each time the user has chosen to remove the item from the list (not just for one button)
+        updateClickedIdsHashMap(userMovieId, e.target);
+        console.log(clickedIdsHashMap);
+
+    }
+
     return(
         <section className='movieResults'>
             <div className="wrapper">
@@ -40,21 +126,21 @@ const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, endReached, 
                                 value={movie.original_title}
                                 // give the button an id with the value of the matching movie id to the movie title (can then use e.target.id in the click handler to have more useful data in the database)
                                 id={movie.id}
-                                onClick={handleClick}
+                                onClick={handleAddClick}
                                 // using the dataCounter state or the array length of our userMovies state array to check whether 10 movies have been added or not (still able to access that information even after going to a different year and then coming back to that year again without having submitted) or whether the list for that particular year has already been submitted (just added in a submitted property every time the user submits successfully, so that 10th index is only truthy upon submission, like this we can disable buttons for only those years)
-                                disabled={dataCounter === 10 || userMovies.length === 10 || userMovies[10] ? true : limitClick}
+                                disabled={dataCounter === 10 || movieIdsArray.length === 10 || userMovies[10] ? true : limitClick}
                                 // disabled={limitClick || (clickedIdsHashMap.get(movie.id) === 1 ? true : false)}
                             >
                             {/* also make sure that added button stays disabled when user goes to next year without having submitted and returns back to that year, so that he knows that that particular item has been added */}
-                            {movie.added === true && userMovies.length < 10 ? 
+                            {movie.added === true && movieIdsArray.length < 10 ? 
                                 <>Added</>
                                 // : userIdsArray.find(item => item === movie.id) === movie.id && dataCounter !== 0 && dataCounter !== 10 && listSubmit === false ?
                                 // <>Added</>
                                 // : movie.added === false && userMovies.length < 10 && deleted === false ?
                                 // <>Add</>   
-                                : userMovies.length === 10 && deleted === false && listSubmit === false ?
+                                : movieIdsArray.length === 10 && deleted === false && listSubmit === false ?
                                 <>Added 10 items to the list</>
-                                : movie.added === false && userMovies.length < 10 && listSubmit === false ?
+                                : movie.added === false && movieIdsArray.length < 10 && listSubmit === false ?
                                 <>Add to the list</>
                                 : deleted && listSubmit === false ?
                                 <>Add to the list</>
