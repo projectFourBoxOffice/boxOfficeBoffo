@@ -53,8 +53,6 @@
 
 // importing firebase
 import app from './firebase.js';
-// import firebase from './firebase.js';
-// need to import remove too (haven't used it yet to avoid unused var error)
 import { getDatabase, ref, onValue, push, remove, update } from 'firebase/database';
 
 // use effect for fetching our firebase data and preventing memory leak when user leaves the page
@@ -63,8 +61,9 @@ import { useState, useEffect } from 'react';
 // importing components
 import SearchForm from './SearchForm.js';
 import DisplayMovies from './DisplayMovies.js';
-import PredictionList from './PredictionList.js'
-// most likely gonna have another component for the prediction list (can also fetch the data in that same component?)
+import PredictionList from './PredictionList.js';
+import ListSubmission from './ListSubmission.js';
+import ActualPosition from './ActualPosition.js';
 
 import './App.css';
 
@@ -78,7 +77,7 @@ function App() {
   // will get values of the results array from our object
   const [movies, setMovies] = useState([]);
   // will get the our new array (copied results array) with new month, day_of_month and year properties to use as filtering conditions
-  // const [allMovies, setAllMovies] = useState([]);
+
   // state for the filtered movies array, to only show movies released between May 1st and Sept 4 (inclusive), and possibly only movies with the original language equal to English (in order to avoid possible mishaps with the include_adult param)
   const [filteredMovies, setFilteredMovies] = useState([]);
   // state for 
@@ -87,21 +86,18 @@ function App() {
   // year state to use for later so that the user knows what year he searched for the summer movies (since user input gets cleared after each submission, needed to find a different alternative to display it onto the page when the user has already submitted), gets value inside the filtering of the copy of the all movies array since if it were done during the mapping of the all movies array, it wouldn't have a value yet (can't do it after the return statement)
   const [movieYear, setMovieYear] = useState("");
 
-  // const [ userMovie, setUserMovie] = useState('');
+  const [userMovies, setUserMovies] = useState([]);
 
-  const [ userMovies, setUserMovies] = useState([]);
-
-  const [ clicked, setClicked] = useState(false);
+  const [clicked, setClicked] = useState(false);
 
   const [listSubmit, setListSubmit] = useState(false);
   const [limitClick, setLimitClick] = useState(false);
-  const [repetition, setRepetition] = useState(false);
-  const [invalidInput, setInvalidInput] = useState(false);
+
   const [ratedList, setRatedList] = useState([]);
 
-  const [ deleted, setDeleted] = useState(false);
+  const [deleted, setDeleted] = useState(false);
 
-  const [ faultySubmit, setFaultySubmit] = useState(false);
+  const [faultySubmit, setFaultySubmit] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -109,16 +105,8 @@ function App() {
 
 
   // hashmap for individual button target
-  // state clieckedIds
+  // state clickedIds
   const [clickedIdsHashMap, setClickedIdsHashMap] = useState(new Map());
-  // state for targeted click button
-  const [targeted, setTargeted] = useState("");
-  const [selectedTitle, setSelectedTitle] = useState("");
- 
-  
-  // const [firebaseKey, setFirebaseKey] = useState("");
-  // firebase Key state to use as a key prop when mapping through our data from firebase
-  // const [firebaseKey, setFirebaseKey] = useState("");
 
   // empty array for the user movie ids (using for later to compare if that array contains current id of the movie chosen by the user)
   let movieIdsArray = [];
@@ -131,26 +119,13 @@ function App() {
   // titles user chose array
   let userTitleArray = [];
 
-  // setting up an empty array for all the years where the user added a movie to his list
-  // let yearArray = [];
-
-  // let dataObj = [];
-
   const [submitAttempt, setSubmitAttempt] = useState(false);
   const [alreadySubmitted, setAlreadySubmitted] = useState("");
   const [submitted, setSubmitted] = useState("");
   
-  // const [databaseObj, setDatabaseObj] = useState({});
-  // const [databaseYear, setDatabaseYear] = useState("");
   const [dataCounter, setDataCounter] = useState(0);
-  // state for text shown when user either has already added 10 items to his list
-  // const end = "Added 10 items to the list";
-  // // or reached cap of list items
-  // const start = "Add to the list";
-  // const [endReached, setEndReached] = useState(start);
 
-  // state to check whether list item has been removed
-  // const [removed, setRemoved] = useState(false);
+  
   // let variables to use for the while loop
   // counter for page param, default value 0 (gets increased in the while loop)
   let counter = 0;
@@ -172,6 +147,8 @@ function App() {
       // increase the value of the counter variable by one each time a new API call is made (use that for the page param inside the search params)
       counter = counter + 1;
       console.log(counter);
+
+      let myUrlSearchParams = new URLSearchParams();
       
       // Search PARAMS
       url.search = new URLSearchParams({
@@ -187,6 +164,12 @@ function App() {
         page: counter
         // no need for query property since that would be restricted to input type=text, which we don't want in our case
       })
+
+      if (userMovies[10] || listSubmit) {
+        myUrlSearchParams.append('sort_by', 'revenue.desc');
+      }
+
+      myUrlSearchParams = url.search;
     
       // our response and data objects
       const response = await fetch(url);
@@ -222,8 +205,6 @@ function App() {
       console.log(moviesWithMonthDay);
 
       // put that array into our movies state in order to be able to access it in our JSX
-      // setAllMovies(moviesWithMonthDay);
-      // console.log(allMovies);
       
       // for filter: conditions that need to pass in our results array in order to display movies: only released between May 1st and September 4th ((inclusive, so that means: month values greater than or equal to 4 and less than or equal to 8), and date value for the month of september (8) less than or equal to 3)
       // use filter for that
@@ -300,53 +281,8 @@ function App() {
 
     userTitleArray.push(userMovies[i].userMovieTitle);
     console.log(userTitleArray);
-    // if (deleted === true) {
-    //   let addCounter = 0;
-    //   console.log(addCounter);
-    // }
     
-    // console.log(userIdsArray);
-    // movieIds.push(userMovies[i].userMovieId);
   }
-
-  // for (let i in databaseObj._path.pieces_[1]) {
-  //   console.log(i);
-  //   console.log(databaseObj._path.pieces_[1]);
-  //   // dataObj.push(databaseObj);
-  //   // console.log(dataObj);
-  //   yearArray.push(databaseObj._path.pieces_[1]);
-  //   console.log(yearArray);
-  //   console.log(yearArray[i]);
-  // }
-  
-
-  // userMovies.forEach((movie) => {
-  //   // pushing each rating stored in our database for each listed movie to the array to then check if the array length is 10 and doesn't have repeating numbers
-    
-  //   if (movie.rating === e.target.value) {
-  //     setRepetition(true);
-  //     console.log(movie.rating);
-  //     console.log(e.target.value);
-  //     // setInvalidInput(false);
-  //   }
-  //   if (movie.rating === null || movie.rating === undefined) {
-  //     setInvalidInput(true);
-  //   }
-  //   else {
-  //     setRepetition(false);
-  //     console.log(movie.rating);
-  //     console.log(e.target.value);
-  //     if (movie.key === key) {
-  //       movie.rating = e.target.value;
-  //     }
-  //     console.log(movie.rating);
-  //   }
-  //   ratingArray.push(movie.rating);
-  //   console.log(ratingArray);
-  //   console.log(ratingArray.includes(e.target.value));
-  // })
-
-  // console.log(ratingArray);
 
   const updatedMovies = allFilteredMovies.map((movie) => {
     return {...movie, idsArray: movieIdsArray, titleArray: userTitleArray};
@@ -355,8 +291,6 @@ function App() {
   console.log(userTitleArray);
   console.log(updatedMovies);
   
-  
-    
 
   // click handler for adding a movie to the prediction list
   const handleClick = (e) => { 
@@ -365,8 +299,6 @@ function App() {
     setAllFilteredMovies(updatedMovies);
 
     const comparedMovies = updatedMovies.map((movie) => {
-      // console.log(targeted.id === movie.id);
-      // console.log(e.target.value === movie.original_title);
       if (movie.original_title === e.target.value) {
         console.log(movie.idsArray);
         console.log(movieIdsArray);
@@ -392,8 +324,6 @@ function App() {
     setSearchSubmit(true);
     setListSubmit(false);
     setSubmitAttempt(false);
-    setRepetition(false);
-    // setRemoved(false);
     setDeleted(false);
     setFaultySubmit(false);
 
@@ -402,18 +332,14 @@ function App() {
 
     // nesting our soon to be declared object inside a collection called Predictions that contains collections of data per movieYear (adding in the movie info under the specific/matching year with the reference path) (referenced intro to firebase lesson from the notes)
     // this seems to have solved the different lists per year issue
-    const dataRef = ref(database, `Predictions/${movieYear}`);
     const predictionRef = ref(database, `Predictions/${movieYear}/movies`);
-    console.log(dataRef);
     
     // now we're adding the matching id and value (title and movie id into our database)
     const userMovieTitle = e.target.value;
     const userMovieId = e.target.id;
-    // let rating = null;
     
     console.log(e.target.value);
     console.log(e.target.id);
-    setSelectedTitle(e.target.value);
 
     // used this video as a reference for nesting properties inside our database
     // https://www.youtube.com/watch?v=OlyA7Q0qPPE
@@ -422,7 +348,6 @@ function App() {
     const listedMovie = {
       userMovieTitle,
       userMovieId
-      // rating
     }
 
     // calling the hash map function
@@ -433,49 +358,20 @@ function App() {
     
     // only pushing the selected movie by the user to our database if the selected movie's id doesn't repeat itself and there are less than 10 items (so that user can only add 10 items to his list)
     if (!movieIdsArray.includes(userMovieId) && movieIdsArray.length <= 10) {
-      // setDataCounter(dataCounter + 1);
       console.log(movieIdsArray);
       // pushing our object into our database, while at the same time storing that inside a variable to then use in order to access our key from firebase (using that for when we map through our state userMovies containing all the data later on)
-      const firebaseObj = push(predictionRef, listedMovie);
-      
-      
-      console.log(firebaseObj);
-      // console.log(dataCounter);
-      // setDatabaseObj(firebaseObj);
-
-      
-      
+      push(predictionRef, listedMovie);
+          
       // in order to access the year stored inside the entire object from our database (not inside the state array which only contains the movie data under the path of the selected movie year), we can use the pieces_ array stored inside the _path object which contains our current year at index 1
       // like this we can make sure that the buttons stay disabled based on whether there is already data stored for that particular year (meaning the user must have added a movie from that year to his list since the data only gets pushed/the node gets created in firebase when the user has clicked a button (we are pushing the data inside our click handler function))
-      console.log(firebaseObj._path.pieces_[1]);
-      // setDatabaseYear(firebaseObj._path.pieces_[1]);
-
-      // getting the firebase key from our data object
-      const firebaseKey = firebaseObj.key;
-      console.log(firebaseKey);
-      // setFirebaseKey(firebaseKey); 
-      // setLimitClick(false);
     }
         
     if (userMovies.length >= 9 && !movieIdsArray.includes(userMovieId)) {
       setLimitClick(true);
-      // setEndReached(end);
     }
-
-    // if (movieIdsArray.length === 10 && clicked === false) {
-    //   setLimitClick(true);
-    //   // setEndReached(end);
-    // }
-    // else if (movieIdsArray.length === 10 && clicked === true) {
-    //   setLimitClick(true);
-    //   setEndReached(end);
-    // }
-    
-    // setFirebaseKey(fireKey);
 
     // set the disabled property of the current targeted event (in this case the currently clicked button by the user) to true in order to only disable one button out of all the add buttons for each movies (that are inside the map function)
     e.currentTarget.disabled = true;
-    setTargeted(e.currentTarget);
   
   }
 
@@ -491,27 +387,15 @@ function App() {
     remove(predictionRef);
 
     setSubmitAttempt(false);
-    // setRatedList([]);
-    // setRemoved(true);
 
     // here the ids array does include the user movies id
     // issue: when one item at a time gets removed, the item that is still supposed to stay added (wasn't removed), still changes back to add to the list (only happens when another item gets removed)
     // was able to fix it, but theoretically this issue shouldn't be, there is a bit of a delay between the movie title from our API object and the value of the targeted button (should both be the same values)
     const removedMovies = updatedMovies.map((movie) => {
-      // console.log(userMovieId === movie.id);
-      // console.log(movie.original_title === userMovieTitle);
       if (movie.original_title === userMovieTitle) {
-        console.log(movieIdsArray);
-        // console.log(e.currentTarget.id, e.currentTarget.value);
-        console.log(movie.idsArray.includes(userMovieId));
-        console.log(userMovieId, selectedTitle);
-        console.log(movie.id, movie.original_title);
-        console.log(targeted.id, targeted.value);
-        console.log("Hello");
         // use the clickedIdsHashMap state to grab the user movie id that is also equal to the id of the add button (representing the movie choice) and set the disabled property to false (in order to undo the disabling of that individual button that happens when the user has clicked on the movie already)
         clickedIdsHashMap.get(userMovieId).disabled = false;
         let added = false;
-        // setEndReached(start);
         // return {...movie, added: added};
         return {...movie, added: added};
       }
@@ -519,7 +403,6 @@ function App() {
       else {
         console.log("Really?");
         // return {...movie, added: true};
-        // setEndReached("");
       }
       return movie;
     })
@@ -527,9 +410,7 @@ function App() {
     setAllFilteredMovies(removedMovies);
 
     setLimitClick(false);
-   
-  
-    
+
     // removeClickedIdsHashMap(userMovieId);
     clickedIdsHashMap.delete(userMovieId);
     console.log(clickedIdsHashMap);
@@ -565,13 +446,6 @@ function App() {
   }
   
   console.log(movieYear);
-
-
-  // if (userMovies.length >= 9 && userMovies.movieYear === movieYear) {
-  //   setLimitClick(true);
-  //   // setEndReached(end);
-  // }
-
  
 
   // handles input change, setting the userSearch state equal to the value of the targeted input
@@ -593,7 +467,6 @@ function App() {
     console.log(key);
     setUserRating(e.target.value);
     setSubmitAttempt(false);
-    // setRepetition(false);
     
     // defining an object with a rating property to update our object in our database with that new property
     // like this we can store each one of those user input values in an array (while looping through our state containing those objects) and then determine whether there are undefined values included (ie. when the user hasn't even touched the dropdown) and whether there are values that repeat themselves (setting up conditions based on that later on for list submission)
@@ -602,7 +475,6 @@ function App() {
     }
     console.log(e.target.value);
 
-    // movie.rating = e.target.value;
     const database = getDatabase(app);
     // const dbRef = ref(database);
 
@@ -611,126 +483,15 @@ function App() {
     const predictionRef = ref(database, `Predictions/${movieYear}/movies/${key}`);
     update(predictionRef, userInput);
 
-    // console.log(ratingArray.every((e, i, a) => a.indexOf(e) === i));
-    // if (ratingArray.every((e, i, a) => a.indexOf(e) === i) === false) {
-    //   setRepetition(true);
-    //   console.log(repetition);
-    // } 
-    // else {
-    //   setRepetition(false);
-    //   console.log(repetition);
-    // }
-
-    // userMovies.forEach((movie) => {
-    //   // pushing each rating stored in our database for each listed movie to the array to then check if the array length is 10 and doesn't have repeating numbers
-      
-    //   if (movie.rating === e.target.value) {
-    //     setRepetition(true);
-    //     console.log(movie.rating);
-    //     console.log(e.target.value);
-    //     // setInvalidInput(false);
-    //   }
-    //   // if (movie.rating === null || movie.rating === undefined) {
-    //   //   setInvalidInput(true);
-    //   // }
-    //   else {
-    //     setRepetition(false);
-    //     console.log(movie.rating);
-    //     console.log(e.target.value);
-    //     if (movie.key === key) {
-    //       movie.rating = e.target.value;
-    //     }
-    //     console.log(movie.rating);
-    //   }
-    //   ratingArray.push(movie.rating);
-    //   console.log(ratingArray);
-    //   console.log(ratingArray.includes(e.target.value));
-    // })
-
-    // console.log(ratingArray);
-
-    // if (ratingArray.length !== 10 || ratingArray.length === 0) {
-    //   setInvalidInput(true);
-    // }
-    
-    
-    // const ratingsArray = userMovies.map((movie) => {
-    //   if (movie.rating === e.target.value) {
-    //     setRepetition(true);
-    //     console.log(movie.rating);
-    //     console.log(e.target.value);
-    //     return movie;
-    //   }
-    //   else {
-    //     setRepetition(false);
-    //     console.log(movie.rating);
-    //     console.log(e.target.value);
-    //     if (movie.key === key) {
-          
-    //     }
-    //     console.log(movie.rating);
-    //     return movie;
-    //   }
-    // })
-    // console.log(ratingsArray);
-    // setUserMovies(ratingsArray);
-    // console.log(userMovies);
-   
-    // update(predictionRef, userInput);
-
-    // let i = 0;
-    // while (i < arraySize) {
-    //   // prompt the user for a string
-    //   const input = e.target.value;
-    //   // add the string to the array
-    //   myArray.push(input);
-      
-    //   i++;
-    // }
-
-    // for (let i in userMovies) {
-    //   console.log(i);
-    //   const userInput = e.target.value;
-    //   userMovies[i].userInput;
-    //   console.log(userMovies[i].userInput);
-    //   console.log(i.userInput);
-    // }
-
-    // const inputUserMovies = userMovies.map((item) => {
-    //   let rating = e.target.value;
-    //   return {...item, rating: rating};
-    // })
-    // console.log(inputUserMovies);
-    // setUserMovies(inputUserMovies);
-    // console.log(userMovies);
-
-    // // console.log(myArray); // [ "string1", "string2", "string3", "string4", "string5" ]
-
-    // console.log(e.target.value);
   }
 
   
   // click handler for list submission
   const handleListSubmit = (userMovies) => {
-    // setInvalidInput(false);
     console.log(userMovies);
     // storing the array containing the input values of each dropdown in a state array in order to use it as a prop in the prediction list component (for conditions, other states here for invalid input and repetition were behind by one number, so displayed messages weren't accurate)
     setRatedList(ratingArray);
     // checking if there are undefined or empty values inside rating array to determine whether submission is valid or not
-    console.log(ratingArray.includes(undefined));
-    if (ratingArray.includes(undefined)) {
-      let invalid = true;
-      setInvalidInput(invalid);
-      console.log(invalidInput);
-    } 
-    else {
-      // let invalid = false;
-      setInvalidInput(false);
-      console.log(invalidInput);
-    }
-
-    // setInvalidInput(ratingArray.includes(undefined));
-    console.log(invalidInput);
 
     // this console log will return false when a value inside the rating array repeats itself and true when no value repeats itself inside that array
     // using every and indexOf method to determine whether there are no duplicates inside the array (iterative)
@@ -738,17 +499,6 @@ function App() {
     // info about indexOf method taken from: https://www.w3schools.com/jsref/jsref_indexof_array.asp
     // every takes in an anonymous function with the current value asa required parameter, as well as the index of the current element and the array of that element as optional parameters, that returns the first index of the current value inside the array (in our case the ratingArray with the user input from the dropdown) and checks whether that first index of the current value is the same as the index(or indices) of that value (if the first index is not the same as the other index/indices, that means that the same value is also positioned at another index, which means it is duplicated)
     // only true if all elements passed the test (ie. no element repeats itself (true); if at least one repeats itself, then it returns false)
-    console.log(ratingArray.every((element, index, array) => array.indexOf(element) === index));
-    if (ratingArray.every((element, index, array) => array.indexOf(element) === index)) {
-      let repeated = false;
-      setRepetition(repeated);
-      console.log(repetition);
-    } 
-    else {
-      // let repeated = true;
-      setRepetition(true);
-      console.log(repetition);
-    }
 
     setSubmitAttempt(true);
     
@@ -772,15 +522,10 @@ function App() {
 
       // referencing the movieYear as the last path since we don't want to have the submitted property for each movie but for each year (each list per year)
       const predictionRef = ref(database, `Predictions/${movieYear}/movies`);
-      const submitObj = update(predictionRef, listSubmission);
-      console.log(submitObj);
+      update(predictionRef, listSubmission);
       const submissionRef =  ref(database, `Predictions/${movieYear}/${submitted}`);
       const submissionObj = submissionRef._path.pieces_[2];
-      console.log(submissionObj);
       setSubmitted(submissionObj);
-      // if (submissionObj === true) {
-      //   setSubmitted(true);
-      // }
       console.log(submitted);
       console.log(userMovies.submitted);
       setLimitClick(true);
@@ -791,20 +536,14 @@ function App() {
     }
 
     console.log(ratingArray);
-    
-    console.log(repetition);
     console.log(userRating);
-    console.log(invalidInput);
-    // if (repetition) {
-
-    // }
   }
 
 
    // submit handler for search form
    const handleSearchSubmit = (event) => {
     event.preventDefault();
-
+    setListSubmit(false);
     setAlreadySubmitted(false);
     setUserIdsArray(movieIdsArray);
     
@@ -818,108 +557,22 @@ function App() {
     if (submitted) {
       setAlreadySubmitted(true);
       setLimitClick(true);
-      // setSubmitted(true);
       console.log(alreadySubmitted);
     }
 
-    // const addedMovies = updatedMovies.map((movie) => {
-      // console.log(movie.id);
-      // console.log(movie.idsArray);
-      // console.log(movie.idsArray.findIndex((element) => element === movie.id));
-      // console.log(movieIdsArray.find(item => item === movie.id));
-      // console.log(movieIdsArray);
-  
-      
-       
-      //   console.log(movie.id);
-      //   console.log(movie.idsArray.find(item => item === movie.id));
-      //   console.log(movieIdsArray.find(item => item === movie.id));
-      //   console.log(movie.idsArray.find(item => item === movie.id) === movieIdsArray.find(item => item === movie.id));
-      //   console.log(addCounter !== 0 && userTitleArray.find(item => item === movie.original_title) === movie.original_title);
-      //   if (addCounter !== 0 && movie.added === true) {
-      //     console.log(movie.idsArray);
-      //     console.log(movieIdsArray);
-      //     console.log(movieIdsArray.includes(movie.id));
-      //     console.log("Hello");
-      //     let added = true;
-      //     // return {...movie, added: added};
-      //     return {...movie, added: added};
-      //   }
-      //   console.log(addCounter === 10 && submitted === true);
-      //   if (addCounter === 10 && submitted === true) {
-      //     let submitted = true;
-      //     return {...movie, submitted: submitted};
-      //   }
-      //   else {
-      //     console.log("Really?");
-      //   }
-      //   return movie;
-     
-      
-      // })
-      
-    // console.log(addedMovies);
-    // setAllFilteredMovies(addedMovies);
-    // console.log(allFilteredMovies);
     // clearing the userSearch value, so that search bar gets cleared after each submission
     // maybe better not to clear the user input after submission sicne the user can use the arrows in the input to go up or down a year from the previous search input (more convenient possibly)
     // setUserSearch("");
 
     // setting the all filtered movies array back to an empty array, so that same movies won't be shown again for next search
    
-
-    // setUsersIdArray(movieIdsArray);
     
     // setting the clicked state back to false, so that user doesn't see the list immediately when searching for a new year (only upon clicking the plus button)
-    // if (userMovies.movieYear !== userSearch) {
-    //   setClicked(false);
     console.log(userSearch);
-    console.log(movieYear);
-  
-   
-    //   // setEndReached(start);
-    // }
-    // else {
-    //   setClicked(true);
-    // }
-    // const database = getDatabase(app);
-    // const dbRef = ref(database);
-
-    
-    // referencing the movieYear as the last path since we don't want to have the submitted property for each movie but for each year (each list per year)
-    // const submitRef = ref(database, `Predictions/${movieYear}/${submitted}`);
-    // console.log(submitRef);
-    // const submitObj = submitRef._path.pieces_[2];
-    // console.log(submitObj);
-    // setAlreadySubmitted(submitObj);
-
-    
-    
+    console.log(movieYear);    
 
     setLimitClick(false);
-    // setClicked(false);
-
-    // console.log(movieYear !== userSearch && movieIdsArray.length === 10);
-    // console.log(movieIdsArray.length === 10 || addCounter === 10);
-    // if (movieIdsArray.length === 10 || addCounter === 10) {
-    //   setLimitClick(true);
-    //   console.log(limitClick);
-    // }
-    // console.log(limitClick);
-    // updateClickedIdsHashMap(userMovieId);
-
-    // if (movieYear !== userSearch && movieIdsArray.length === 10) {
-    //   setLimitClick(true);
-    // }
-
-    // if (movieIdsArray.length === 10 && clicked === false) {
-    //   setLimitClick(true);
-    //   // setEndReached(end);
-    // }
-    // else if (movieIdsArray.length === 10 && clicked === true) {
-    //   setLimitClick(true);
-    //   // setEndReached(end);
-    // } 
+    
     setAllFilteredMovies([]);
   }
 
@@ -932,8 +585,7 @@ function App() {
       remove(predictionRef);
       setDeleted(true);
       setLimitClick(false);
-      // setEndReached(start);
-      // clickedIdsHashMap.get().disabled = false;
+
       // mapping through our userMovies array with our objects from our database to set the disabled property of each item back to false
       userMovies.map((userMovieObj) => {
        return clickedIdsHashMap.get(userMovieObj.userMovieId).disabled = false;
@@ -948,28 +600,12 @@ function App() {
       setDataCounter(addCounter);
 
       const deletedMovies = updatedMovies.map((movie) => {
-        // if (movie.idsArray.includes(targeted.id)) {
-        //   console.log(movieIdsArray);
-        //   // console.log(e.currentTarget.id, e.currentTarget.value);
-        //   // console.log(movie.idsArray.includes(userMovieId));
-        //   // console.log(userMovieId, selectedTitle);
-        //   console.log(movie.id, movie.original_title);
-        //   console.log(targeted.id, targeted.value);
-        //   console.log("Hello");
+
           // use the clickedIdsHashMap state to grab the user movie id that is also equal to the id of the add button (representing the movie choice) and set the disabled property to false (in order to undo the disabling of that individual button that happens when the user has clicked on the movie already)
           // clickedIdsHashMap.get(userMovieId).disabled = false;
           let added = false;
-          // setEndReached(start);
           // return {...movie, added: added};
           return {...movie, added: added};
-        // }
-        
-        // else {
-        //   console.log("Really?");
-        //   // return {...movie, added: true};
-        //   // setEndReached("");
-        // }
-        // return movie;
       })
       console.log(deletedMovies);
       setAllFilteredMovies(deletedMovies);
@@ -979,15 +615,21 @@ function App() {
     }
   }
 
+  const [showClicked, setShowClicked] = useState(false);
+
   // click handler for show list button inside search form component for when user has added at least 1 movie to his list (or ten) and hasn't submitted his list yet
 
   const handleShowList = () => {
+    setListSubmit(false);
     setClicked(true);
-    console.log(clicked);
     setSearchSubmit(true);
+    setShowClicked(false);
+  }
+
+  const handleShowSubmitted = () => {
     // setListSubmit(false);
-    // setSubmitAttempt(false);
-    // setFaultySubmit(false);
+    setClicked(true);
+    setShowClicked(true);
   }
   
 
@@ -1026,16 +668,14 @@ function App() {
 
       {/* only show the list of movie images and titles when the user has submitted the form */}
       {
-        searchSubmit ?
+        searchSubmit && listSubmit === false ?
         <DisplayMovies 
           movies={movies}
           filteredMovies={filteredMovies}
           allFilteredMovies={allFilteredMovies}
           handleClick={handleClick}
           limitClick={limitClick}
-          // endReached={endReached}
           handleRemoveClick={handleRemoveClick}
-          // firebaseKey={firebaseKey}
           deleted={deleted}
           userMovies={userMovies}
           movieYear={movieYear}
@@ -1051,7 +691,7 @@ function App() {
       }
       {/* only showing the list if either a corresponding button has been clicked and a year has been searched for and only when the user hasn't submitted a list for that year yet (only show results when the user has submitted, so mapping through the object again but instead of the dropdown just numbers) */}
       {
-        clicked && listSubmit === false && searchSubmit ? 
+        clicked && listSubmit === false ? 
         <PredictionList 
           userMovies={userMovies}
           listSubmit={listSubmit}
@@ -1063,80 +703,53 @@ function App() {
           userRating={userRating}
           deleted={deleted}
           searchSubmit={searchSubmit}
-          repetition={repetition}
           submitAttempt={submitAttempt}
-          invalidInput={invalidInput}
           ratedList={ratedList}
           dataCounter={dataCounter}
         />
+        : showClicked ?
+        <>
+          <PredictionList 
+            userMovies={userMovies}
+            listSubmit={listSubmit}
+            handleRemoveClick={handleRemoveClick}
+            handleMovieRating={handleMovieRating}
+            handleListSubmit={handleListSubmit}
+            handleConfirm={handleConfirm}
+            faultySubmit={faultySubmit}
+            userRating={userRating}
+            deleted={deleted}
+            searchSubmit={searchSubmit}
+            submitAttempt={submitAttempt}
+            ratedList={ratedList}
+            dataCounter={dataCounter}
+            showClicked={showClicked}
+          />
+          <p>Now what? Go up to the search bar and try your luck with a different year!</p>
+          <a
+            className="searchText"
+            href="#search"
+          >Back to top</a>
+        </>
         // else if: the user has submitted the list, but not searched for a another year yet, show a submit message
         : listSubmit && ratedList.every((e, i, a) => a.indexOf(e) === i) === true && userRating !== "" && !ratedList.includes(undefined) && searchSubmit === false ? 
-          <p>Your List Has Been Submitted</p>
+          <ListSubmission 
+          handleShowSubmitted={handleShowSubmitted}
+          />
           // else: don't display anything
           : null
+      }
+
+      {
+        listSubmit || userMovies[10] ?
+        <ActualPosition />
+        : null
       }
 
       <footer className={`${allFilteredMovies.length === 0 || listSubmit ? "noMovies" : ""} `}>
           <p>Created @ <a href="https://junocollege.com/" target="_blank" rel="noopener noreferrer">Juno College of Technology</a></p>
       </footer>
-      
-
-      {/* might have to store this inside another component PredictionList */}
-
-      {/* if: only display the prediction list when the user has clicked the plus button under the movie and when the user hasn't submitted the list yet and also only when the user has actually hit the search button for movies under a specific year (submitted the search form) */}
-      {/* {
-        clicked && listSubmit === false && searchSubmit ?  */}
-      {/* //  <>
-      //   <ul>
-      //     {userMovies.map((movieObj) => { */}
-      {/* //       return(
-      //         // using our key for our firebase object as a key prop
-      //         <li key={movieObj.key}>
-      //           {/* still have to add an onChange and a value set to the user selection of the number input  */}
-      {/* //           <select name="selectedList" id="selectedList" required value={userRating} onChange={handleMovieRating}>
-      //             <option value="1">1</option>
-      //             <option value="2">2</option>
-      //             <option value="3">3</option>
-      //             <option value="4">4</option>
-      //             <option value="5">5</option>
-      //             <option value="6">6</option>
-      //             <option value="7">7</option>
-      //             <option value="8">8</option>
-      //             <option value="9">9</option>
-      //             <option value="10">10</option>
-      //           </select> */} 
-                {/* since now the movie properties like id and title are nested inside the corresponding year, we are using movieYear (as a parameter in the map and here) */}
-      {/* //           <p>{movieObj.userMovieTitle}</p>
-      //           <button onClick={() => handleRemoveClick(movieObj.key, movieObj.userMovieId)}>Remove</button>
-      //         </li> */}
-      {/* //       )
-      //     })}
-      //   </ul> */}
-        {/* // { */}
-        {/* //   faultySubmit && deleted === false ? 
-        //   <div>
-        //     <p>You cannot submit your list if you have not added 10 movies</p>
-        //   </div> 
-        //   : null */}
-        {/* // }
-        // { */}
-        {/* //   deleted === false && userMovies.length !== 0 ? 
-        //   <button onClick={handleConfirm}>Delete List</button>
-        //   : null
-        // }
-        // { */}
-        {/* //   listSubmit === false && deleted === false && userMovies.length !== 0 ?
-        //   <button onClick={handleListSubmit} type="submit">Submit</button>
-        //   : null
-        // }
-
-      // </> */}
-      {/* // // else if: the user has submitted the list, but not searched for a another year yet, show a submit message */}
-      {/* //   : listSubmit && searchSubmit === false ? 
-      //     <p>Your List Has Been Submitted</p>
-          // else: don't display anything
-          : null
-      // } */}
+     
     </div>
   );
 }

@@ -1,20 +1,20 @@
 // PredictionList component
 
-const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, handleRemoveClick, listSubmit, handleConfirm, handleListSubmit, handleMovieRating, userRating, repetition, submitAttempt, invalidInput, ratedList, dataCounter}) => {
+const PredictionList = ({userMovies, faultySubmit, deleted, handleRemoveClick, listSubmit, handleConfirm, handleListSubmit, handleMovieRating, submitAttempt, ratedList, showClicked}) => {
 
 
     return(
         <section className="predictionList" id="list">
             <div className="wrapper">
+            {
+            userMovies[10] ?
+            <p>Your Results</p>
+            : null
+            }
 
-            
             <ul className={`${userMovies[10] === undefined ? "predictionList" : "submittedList"}`}>
-                {/* {
-                    ratedList.every((e, i, a) => a.indexOf(e) === i) === false && deleted === false && submitAttempt === false ?
-                    <p>Sorry, make sure the numbers don't repeat themselves</p>
-                    :
-                    null
-                } */}
+                
+                
             {userMovies.map((movieObj) => {
                 return(
                 // only showing values that are not undefined (if the user has submitted something, the movie rating inside that particular 10th object dedicated to the submitted property would be empty, else we still want the undefined values to show up since the user hasn't even chosen his value yet)
@@ -113,6 +113,15 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
             </div>
             : null
             }
+            {
+            showClicked !== true ?
+            <a
+            className="searchText"
+            href="#search"
+            >Back to top</a>
+            : null
+            }
+            
            
             </div>
         </section>
