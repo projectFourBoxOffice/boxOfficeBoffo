@@ -6,7 +6,7 @@ html { box-sizing: border-box;}
 
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; border: 0; padding: 0; white-space: nowrap; clip-path: inset(100%); clip: rect(0 0 0 0); overflow: hidden;}
 
-/* Import fonts */
+/* Import Google fonts */
 @import url('https://fonts.googleapis.com/css2?family=Barlow&family=Montserrat:wght@700&display=swap');
 
 
@@ -15,27 +15,16 @@ html {
   background-color: #001d3d;
 }
 
-ul {
-  list-style-type: none;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-  display: inline-block;
-}
-
 .App {
   text-align: center;
 }
-
 
 .wrapper {
   margin: 0 auto;
   max-width: 1200px;
   width: 90%;
-
 }
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -46,22 +35,25 @@ a {
 }
 
 ul {
+  list-style-type: none;
   display: flex;
   flex-wrap: wrap;
   padding: 0 10px;
 }
-
-/* .movieResults ul{
-  border: 2px solid black;
-} */
 
 li {
   background-color: #012a53;
   width: calc(100% / 4);
 }
 
-.movieResults li{
+.movieResults li {
   margin-top: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
 }
 
 h1,
@@ -71,7 +63,6 @@ label {
   color:#ffc300;
   font-family: 'Barlow', sans-serif;
 }
-
 
 header {
   height: 165px;
@@ -99,7 +90,7 @@ h1 {
   margin: 0;
 }
 
-.searchText{
+.searchText {
   padding: 3px 6px;
 }
 
@@ -116,7 +107,7 @@ button,
   font-weight: 600;
 }
 
-li{ 
+li { 
   padding: 2rem 0;
   margin: 2rem 0;
 }
@@ -141,11 +132,9 @@ a:hover {
 }
 
 .predictionList {
- /* flex-direction: column; */
  align-items: center;
 }
 
-/* styling for list when the user has submitted (no dropdown) */
 ul.submittedList li {
   justify-content: flex-start;
 }
@@ -158,8 +147,6 @@ ul.submittedList li p:last-child {
 ul.submittedList p:first-child {
   margin-left: 130px;
 }
-
-
 
 ul.submittedList .textContainer {
   width: fit-content;
@@ -205,7 +192,7 @@ footer {
   margin-bottom: 0px;
 }
 
-.searchBar{
+.searchBar {
   margin-top: 20px;
 }
 
@@ -229,15 +216,15 @@ footer {
   margin-right: 15px;
 }
 
-.posterContainer{
+.posterContainer {
   height: 300px;
 }
 
-img{
+img {
   height: 100%;
 }
 
-.titleContainer{
+.titleContainer {
   height: 80px;
   display: flex;
   align-items: center;
@@ -245,28 +232,27 @@ img{
   margin: 30px 10px 5px;
 }
 
-.titleContainer p{
+.titleContainer p {
   height: 100%;
   font-weight: bold;
 }
 
-.placeholderContainer img{
+.placeholderContainer img {
   width: 250px;
 }
 
-/* Media Queries */
+/* Media Queries Styling*/
 
-@media(max-width: 1304px){
-  .movieResults li{
+@media(max-width: 1304px) {
+  .movieResults li {
     width: calc(100% / 3);
   }
 }
 
-@media (max-width: 1100px){
-  .predictionList li{
+@media (max-width: 1100px) {
+  .predictionList li {
     width: 100%;
   }
-
   .predictionList li:nth-child(1),
   .predictionList li:nth-child(3),
   .predictionList li:nth-child(5),
@@ -274,8 +260,7 @@ img{
   .predictionList li:nth-child(9) {
     margin-right: 0;
   }
-
-  .titleContainer{
+  .titleContainer {
     margin: 30px 25px 5px;
   }
 }
@@ -289,47 +274,42 @@ img{
   }
 }
 
-@media(max-width: 910px){
+@media(max-width: 910px) {
   .movieResults li{
     width: calc(100% / 2);
   }
-
-  .buttonContainer button{
+  .buttonContainer button {
     width: calc((30% / 1.5) - 10px);
   }
 }
 
-@media(max-width: 800px){
+@media(max-width: 800px) {
   .noMovies {
     margin-top: 65%;
   }
 }
 
-@media(max-width: 675px){
-  .buttonContainer button{
+@media(max-width: 675px) {
+  .buttonContainer button {
     width: calc(25% - 10px);
   }
 }
 
-@media(max-width: 550px){
-  .buttonContainer button{
+@media(max-width: 550px) {
+  .buttonContainer button {
     width: calc(30% - 10px);
   }
-
   .predictionList p,
-  select{
+  select {
     margin-right: 10px;
   }
-
-  .predictionList .textContainer{
+  .predictionList .textContainer {
     width: 30%;
   }
-
-  .movieResults li{
+  .movieResults li {
     width: 100%;
   }
-
-  select{
+  select {
     font-size: 0.9rem;
   }
   .noMovies {
@@ -356,16 +336,13 @@ img{
   .searchText{
     font-size: 0.9rem;
   }
-
   .predictionList .textContainer{
     width: 90%;
   }
-
   .predictionList li{
     flex-wrap: wrap;
     height: 250px;
   }
-
   .buttonContainer button{
     width: calc(40% - 10px);
   }
@@ -406,7 +383,6 @@ img{
   .removeButton{
     font-size: 0.9rem;
   }
-
   footer{
     font-size: 0.9rem;
   }

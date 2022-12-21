@@ -9,30 +9,24 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
 
             
             <ul className={`${userMovies[10] === undefined ? "predictionList" : "submittedList"}`}>
-                {/* {
-                    ratedList.every((e, i, a) => a.indexOf(e) === i) === false && deleted === false && submitAttempt === false ?
-                    <p>Sorry, make sure the numbers don't repeat themselves</p>
-                    :
-                    null
-                } */}
+              
             {userMovies.map((movieObj) => {
                 return(
-                // only showing values that are not undefined (if the user has submitted something, the movie rating inside that particular 10th object dedicated to the submitted property would be empty, else we still want the undefined values to show up since the user hasn't even chosen his value yet)
+                // Only showing values that are not undefined (if the user has submitted something, the movie rating inside that particular 10th object dedicated to the submitted property would be empty, else we still want the undefined values to show up since the user hasn't even chosen his value yet)
                 ratedList.find(item => item === undefined) === movieObj.rating && userMovies[10] ? null
                 : 
-                // using our key for our firebase object as a key prop
+                // Using our key for our Firebase object as a key prop
                 <li key={movieObj.key}>
-                    {/* still have to add an onChange and a value set to the user selection of the number input  */}
                     {
                     userMovies[10] === undefined ?
                     <select 
                     name="selectedList" 
                     id="selectedList" 
                     required
-                    // setting the value of the select equal to the rating values from our database object (user input), so that user input still stays on the page even when user goes to a different year without having submitted his list for that year prior OR the default value (since if we define another defaultValue attribute with the value of default, the console will show an error because it only accepts one value attribute inside a select tag (but we still want to have the disabled option without a number as the default option that is automatically selected so that we can listen properly for when the user changes the value of the dropdown (1 won't get pushed into our database if it's already selected by default and the user won't know)))
+                    // Setting the value of the select equal to the rating values from our database object (user input), so that user input still stays on the page even when user goes to a different year without having submitted his list for that year prior or the default value (since if we define another defaultValue attribute with the value of default, the console will show an error because it only accepts one value attribute inside a select tag (but we still want to have the disabled option without a number as the default option that is automatically selected so that we can listen properly for when the user changes the value of the dropdown (1 won't get pushed into our database if it's already selected by default and the user won't know)))
                     value={movieObj.rating || "default"}
                     onChange={e => handleMovieRating(e, movieObj.key)}
-                    // comparing user rating (input value which would also include the default value) vs the rating property from our database object (which doesn't include that default value, only values from 1 to 10)
+                    // Comparing user rating (input value which would also include the default value) vs the rating property from our database object (which doesn't include that default value, only values from 1 to 10)
                     className={`${movieObj.rating === undefined || movieObj.rating === "" ? "" : "selectedNumber" }`}
                     >
                         <option value={"default"} disabled>Pick a number</option>
@@ -55,7 +49,6 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
                     <div className="textContainer">
                         <p>{movieObj.userMovieTitle}</p>
                     </div>
-                    {/* we don't want to have a remove button present when the user has already submitted his list since he shouldn't be able to change it after submissiom */}
                     {
                     userMovies[10] === undefined ?
                     <button 
@@ -64,10 +57,7 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
                     >Remove</button>
                     : null  
                     }
-                    
                 </li>
-
-                
                 )
               })
             }
@@ -109,7 +99,6 @@ const PredictionList = ({allFilteredMovies, userMovies, faultySubmit, deleted, h
                 <button onClick={handleConfirm}>Delete List</button>
                 : null
                 }
-            {/* another idea: go back to top anchor tag (styled like a button) to have user be able to navigate more easily throughout movie options and list */}
             </div>
             : null
             }
