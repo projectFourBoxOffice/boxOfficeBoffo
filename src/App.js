@@ -68,6 +68,7 @@ import Footer from './Footer.js';
 
 import './App.css';
 
+
 function App() {
   // state for the user input from the search bar (set to empty string by default)
   const [userSearch, setUserSearch] = useState("");
@@ -92,7 +93,6 @@ function App() {
   const [faultySubmit, setFaultySubmit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userRating, setUserRating] = useState('');
-  const [error, setError] = useState(false);
 
   // hashmap for individual button target
   // state clickedIds
@@ -121,7 +121,7 @@ function App() {
 
   // async function getMovies to make the API call (calling that function in the submit handler)
   const getMovies = async () => {
-    try {
+    
     // using the discover/movie endpoint in order to get the movie data with the year property and without the required query param (in the movie/search endpoint the query param would be a requirement which we don't want in our case, the user is looking for movie titles based on the release_year and not the other way around)
     setLoading(true);
 
@@ -145,13 +145,16 @@ function App() {
         page: counter
       })
     
+    
       // our response and data objects
       const response = await fetch(url);
       const data = await response.json();
 
+      const movieResults = data.results;
+
       // setting loading to false once API data is received
       setLoading(false);
-      setError(false);
+      
       // need to filter by month (getMonth()) and day of the month (use the getDate() method for that)
       // need to add in a month property to our movies array (mapping), so that we can then filter out the movies that don't fall between May (value of 4) and September (value of 8) with the .filter method (since our data comes in a array of objects)
       const moviesWithMonthDay = data.results.map((movie) => {
@@ -195,17 +198,13 @@ function App() {
       // if the length of our array that contains all filtered array values is greater than or equal to 10, break the while loop (since we only want to keep adding new results to our page/API call when there is less than 10 movies available on a page, default page is 1, but this page doesn't always have enough movies that match our filtering conditions, user needs to have at least 10 movies for the prediction list)
       if (allFilteredArray.length >= 20) {
         break;
+        // set counter back to default value 0 after while loop is done
+        
       }
-
-    }
-    // set counter back to default value 0 after while loop is done
+    } 
     counter = 0;
-   } 
-   catch (error) {
-    setLoading(false);
-    setError(true);
-   }
   }
+ 
 
   // defining a counter for each time data gets pushed, updating that counter's value inside the for in loop of our state array containing our data object from firebase (like this we can determine whether the user has already added a movie in that particular year, starts anew for each year and also updates accordingly when item gets removed)
   let addCounter = 0;
@@ -221,7 +220,6 @@ function App() {
     addCounter = addCounter + 1;
 
     userTitleArray.push(userMovies[i].userMovieTitle);
-    
   }
 
   const updatedMovies = allFilteredMovies.map((movie) => {
@@ -416,21 +414,22 @@ function App() {
     event.preventDefault();
     setListSubmit(false);
     // calling the async function getMovies with the API call, so that movies only show up once the user searches for a year
-    getMovies(); 
+    getMovies();
+    
     // setting userSubmit to true since the user is submitting the form (using that as a condition later in the return/JSX)
     setSearchSubmit(true);
     
     if (submitted) {
       setLimitClick(true);
     }
-
     setLimitClick(false);
+
     // setting the all filtered movies array back to an empty array, so that same movies won't be shown again for next search
     setAllFilteredMovies([]);
   }
 
-  // maybe create an array for each user input in order to determine, which input has repeated itself to avoid submissions with same number for every list item
-
+  
+  // delete click handler with confirm window
   const handleConfirm = () => {
     if(window.confirm("Are you sure you want to delete this list")) {
       const database = getDatabase(app);
@@ -491,7 +490,6 @@ function App() {
         listSubmit={listSubmit}
         userMovies={userMovies}
         handleShowList={handleShowList}
-        error={error}
       />
 
       {/* only show the list of movie images and titles when the user has submitted the form */}

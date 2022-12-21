@@ -1,7 +1,7 @@
 // Search Form component for search bar
 
 // Passing in the values stored inside submit handler, change handler and userSearch state (with user input value) as props and destructuring them
-const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYear, searchSubmit, loading, listSubmit, userMovies, handleShowList, error}) => {
+const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYear, searchSubmit, loading, listSubmit, userMovies, handleShowList}) => {
 
     return(
         <div className="wrapper">
@@ -26,8 +26,6 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                 {
                     searchSubmit ?
                     <p>You searched for summer movies from the year {movieYear}.</p>
-                    : error ?
-                    <p>Sorry, something went wrong.</p>
                     : null
                 }
                 {
