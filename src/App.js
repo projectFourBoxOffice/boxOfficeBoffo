@@ -132,7 +132,7 @@ function App() {
   let allFilteredArray = [];
 
  // defining an empty array for randomizing results (for displaying movies before user user submits)
-  let randomMovies = [];
+  let copyFilteredAddedMovies = [];
 
   // defining an empty array for movies with added and ranking property as well only for movies that match data from database
   let listedPositions = [];
@@ -208,7 +208,6 @@ function App() {
         // adding in the newly created properties into our array of objects
         return {...movie, month: month, day_of_month: dayOfMonth, year: year};
       })
-      console.log(moviesWithMonthDay);
       
       // for filter: conditions that need to pass in our results array in order to display movies: only released between May 1st and September 4th ((inclusive, so that means: month values greater than or equal to 4 and less than or equal to 8), and date value for the month of september (8) less than or equal to 3)
 
@@ -244,7 +243,7 @@ function App() {
         return {...movie, ranking: ranking};
       })
 
-      const copyFilteredAddedMovies = [...filteredAddedMovies];
+      copyFilteredAddedMovies = [...filteredAddedMovies];
 
       // adding filter to our array to only return movies that the user chose to submit for comparison of actual ranking in terms of revenue
       listedPositions = filteredAddedMovies.filter((movie) => {
@@ -256,23 +255,23 @@ function App() {
       // updating the movie positions state with the newly mapped array containing our ranking property (not randomized yet) and added property
       setMoviePositions(listedPositions);
 
-      // randomizing the order of movies (copy of the mapped array) displayed onto the page since the data is sorted by revenue descending, so it would be too much of a giveaway to not have the order randomized (still need the sorted by revenue param for displaying the actual positions)
-      const randomizedMovies = copyFilteredAddedMovies.sort(() => 0.5 - Math.random());
-      randomMovies = randomizedMovies;
-      setAllFilteredMovies(randomizedMovies);
-
-
       // if the length of our array that contains all filtered array values is greater than or equal to 10, break the while loop (since we only want to keep adding new results to our page/API call when there is less than 10 movies available on a page, default page is 1, but this page doesn't always have enough movies that match our filtering conditions, user needs to have at least 10 movies for the prediction list)
-      if (randomMovies.length >= 20) {
+      if (copyFilteredAddedMovies.length >= 20) {
         break;
         // set counter back to default value 0 after while loop is done
       }
     } 
-    if (randomMovies.length > 20) {
-      randomMovies.length = 20;
+    if (copyFilteredAddedMovies.length > 20) {
+      copyFilteredAddedMovies.length = 20;
     }
+    // randomizing the order of movies (copy of the mapped array) displayed onto the page since the data is sorted by revenue descending, so it would be too much of a giveaway to not have the order randomized (still need the sorted by revenue param for displaying the actual positions) (at the bottom to ensure only movies show up that are included in that array length of 20)
+    const randomizedMovies = copyFilteredAddedMovies.sort(() => 0.5 - Math.random());
+    setAllFilteredMovies(randomizedMovies);
+
+    // setting the counter variable back to 0
     counter = 0;
 
+    // error handling of API
     if (searchError) {
       setSearchError(false);
     }
@@ -567,6 +566,7 @@ function App() {
          userMovies={userMovies}
          handleShowList={handleShowList}
          searchError={searchError}
+         allFilteredMovies={allFilteredMovies}
        />
 
        {/* only show the list of movie images and titles when the user has submitted the form */}
@@ -583,6 +583,8 @@ function App() {
           loading={loading}
           dataCounter={dataCounter}
           listSubmit={listSubmit}
+          searchError={searchError}
+          userTitleArray={userTitleArray}
         />
         : null
        }
@@ -604,6 +606,7 @@ function App() {
           showClicked={showClicked}
           moviePositions={moviePositions}
           movieYear={movieYear}
+          allFilteredMovies={allFilteredMovies}
         />
         : showClicked ?
         <>
@@ -624,6 +627,7 @@ function App() {
             moviePositions={moviePositions}
             listedPositions={listedPositions}
             movieYear={movieYear}
+            allFilteredMovies={allFilteredMovies}
           />
           {/* <MoviePositions
             moviePositions={moviePositions}
@@ -631,10 +635,15 @@ function App() {
           <div className="wrapper">
             <p>Now what? Go up to the search bar and try your luck with a different year!</p>
           </div>
-          <a
+          {
+            allFilteredMovies.length !== 0 ?
+            <a
             className="searchText"
             href="#search"
-          >Back to top</a>
+            >Back to top</a>
+            : null
+          }
+          
         </>
         : listSubmit && ratedList.every((e, i, a) => a.indexOf(e) === i) === true && userRating !== "" && !ratedList.includes(undefined) && searchSubmit === false ? 
           <ListSubmission 

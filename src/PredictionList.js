@@ -1,6 +1,6 @@
 // PredictionList component
 
-const PredictionList = ({userMovies, faultySubmit, deleted, handleRemoveClick, listSubmit, handleConfirm, handleListSubmit, handleMovieRating, submitAttempt, ratedList, moviePositions, showClicked, movieYear}) => {
+const PredictionList = ({userMovies, faultySubmit, deleted, handleRemoveClick, listSubmit, handleConfirm, handleListSubmit, handleMovieRating, submitAttempt, ratedList, moviePositions, showClicked, movieYear, allFilteredMovies}) => {
 
     return(
         <section className="predictionList" id="list">
@@ -127,7 +127,7 @@ const PredictionList = ({userMovies, faultySubmit, deleted, handleRemoveClick, l
                 </div>
             
             {
-            showClicked !== true ?
+            showClicked !== true && allFilteredMovies.length !== 0 ?
             <a
             className="searchText"
             href="#search"
