@@ -349,7 +349,6 @@ function App() {
 
       for(let key in data){
         newState.push({key, ...data[key]});
-        console.log(data[key].rating);
       }
       // using the sort method to get the data from firebase sorted based on the rating (user input) from the user for each movie (so 1 to 10, instead of default order depending on what movie the user added first)   
       newState.sort((a,b) => a.rating - b.rating);

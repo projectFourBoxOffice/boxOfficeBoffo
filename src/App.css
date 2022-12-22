@@ -167,6 +167,8 @@ a:focus {
 
 ul.submittedList li {
   justify-content: flex-start;
+  padding: 0;
+  margin: 0;
 }
 
 ul.submittedList li p:last-child {
@@ -326,6 +328,7 @@ img {
   ul.submittedList .textContainer,
   ul.submittedList p:first-child {
     margin-left: 0;
+    margin-right: 0;
   }
   ul.submittedList li {
     justify-content: center;
@@ -339,7 +342,7 @@ img {
   }
   .predictionList p,
   select {
-    margin-right: 0px;
+    margin-right: 50px;
   }
   .predictionList .textContainer {
     width: 30%;
@@ -380,6 +383,10 @@ img {
   .predictionList li{
     flex-wrap: wrap;
     height: 250px;
+  }
+  .predictionList p,
+  select {
+    margin-right: 0px;
   }
   .buttonContainer button{
     width: calc(40% - 10px);
