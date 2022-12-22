@@ -165,8 +165,18 @@ a:focus {
  align-items: center;
 }
 
-ul.submittedList li {
+.submitted ul.submittedList li {
   justify-content: flex-start;
+  align-items: center;
+  height: 200px;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.submitted .submittedList {
+  width: calc((100% / 2) - 10px);
+  padding: 0;
 }
 
 ul.submittedList li p:last-child {
@@ -175,7 +185,7 @@ ul.submittedList li p:last-child {
 }
 
 ul.submittedList p:first-child {
-  margin-left: 130px;
+  margin-left: 55px;
 }
 
 ul.submittedList .textContainer {
@@ -197,6 +207,22 @@ ul.submittedList .textContainer {
 .predictionList li:nth-child(7),
 .predictionList li:nth-child(9) {
   margin-right: 10px;
+}
+
+.submitted {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.submitted .listHeading {
+  align-self: center;
+}
+
+
+.submitted .listFlex {
+  display: flex;
+  justify-content: space-between;
 }
 
 select, .predictionList p {
@@ -292,6 +318,13 @@ img {
   }
   .titleContainer {
     margin: 30px 25px 5px;
+    height: 85px;
+  }
+}
+
+@media (max-width: 1010px) {
+  .titleContainer {
+    height: 110px;
   }
 }
 
@@ -333,13 +366,22 @@ img {
   }
 }
 
+@media (max-width: 602px) {
+  .titleContainer {
+    height: 130px;
+  }
+}
+
 @media(max-width: 550px) {
   .buttonContainer button {
     width: calc(30% - 10px);
   }
   .predictionList p,
   select {
-    margin-right: 0px;
+    margin-right: 50px;
+  }
+  .submittedList p {
+    margin-right: 0;
   }
   .predictionList .textContainer {
     width: 30%;
@@ -352,6 +394,9 @@ img {
   }
   .noMovies {
     margin-top: 80%;
+  }
+  .titleContainer {
+    height: 80px;
   }
 }
 
@@ -380,6 +425,10 @@ img {
   .predictionList li{
     flex-wrap: wrap;
     height: 250px;
+  }
+  .predictionList p,
+  select {
+    margin-right: 0px;
   }
   .buttonContainer button{
     width: calc(40% - 10px);

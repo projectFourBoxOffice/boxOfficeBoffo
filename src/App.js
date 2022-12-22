@@ -99,7 +99,10 @@ function App() {
   const [faultySubmit, setFaultySubmit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userRating, setUserRating] = useState('');
-
+  const [rank, setRank] = useState("");
+  const [moviePositions, setMoviePositions] = useState([]);
+  
+  const [showClicked, setShowClicked] = useState(false);
   // hashmap for individual button target
   // state clickedIds
   const [clickedIdsHashMap, setClickedIdsHashMap] = useState(new Map());
@@ -128,6 +131,33 @@ function App() {
   // define an array (empty at first) to then later store the copy of the filtered array inside the while loop (avoid direct mutation), also will hold the values from the results of multiples pages (if necessary)
   let allFilteredArray = [];
 
+ // defining an empty array for randomizing results (for displaying movies before user user submits)
+  let randomMovies = [];
+
+  // defining an empty array for movies with added and ranking property as well only for movies that match data from database
+  let listedPositions = [];
+
+  // submit handler for search form
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    // calling the async function getMovies with the API call, so that movies only show up once the user searches for a year
+
+    getMovies(allFilteredMovies);
+
+    setListSubmit(false);
+    
+    // setting userSubmit to true since the user is submitting the form (using that as a condition later in the return/JSX)
+    setSearchSubmit(true);
+    
+    if (submitted) {
+      setLimitClick(true);
+    }
+    setLimitClick(false);
+
+    // setting the all filtered movies array back to an empty array, so that same movies won't be shown again for next search
+    setAllFilteredMovies([]);
+  }
+
   // async function getMovies to make the API call (calling that function in the submit handler)
   const getMovies = async () => {
     try {
@@ -150,10 +180,11 @@ function App() {
         include_adult: false,
         include_video: false,
         language: 'en-US',
+        sort_by: 'revenue.desc',
         // giving the page param the value of the counter variable (value is 1 as long as there are at least 10 filtered movie items on that page, while that's not the case, keep counting until there is at least 10, so could go up to page 2 or 3)
         page: counter
       })
-    
+
     
       // our response and data objects
       const response = await fetch(url);
@@ -173,10 +204,11 @@ function App() {
         let dayOfMonth = d.getDate();
         // year to then display it later on to the user after he has submitted the search form (can't use userSearch since the input is getting cleared upon each submission)
         let year = d.getFullYear();
-    
+        
         // adding in the newly created properties into our array of objects
-        return {...movie, month: month, day_of_month: dayOfMonth, year: year, added: false};
+        return {...movie, month: month, day_of_month: dayOfMonth, year: year};
       })
+      console.log(moviesWithMonthDay);
       
       // for filter: conditions that need to pass in our results array in order to display movies: only released between May 1st and September 4th ((inclusive, so that means: month values greater than or equal to 4 and less than or equal to 8), and date value for the month of september (8) less than or equal to 3)
 
@@ -196,24 +228,48 @@ function App() {
         else {
           return movie.month  >= 4 && movie.month <=8 && movie.original_language === "en";
         }
-        
       })
 
       // pushing the copy of the filtered movie items array into our new array (so that it keeps adding new values every time the array length is less than 10)
       allFilteredArray.push(...filteredMovieItems);
 
-      // putting that newly populated all filtered array into a state to then use in our return in the display movies component (so that not just the filtered movies get shown from the first page, but from all pages necessary in order to have at least 10)
-      setAllFilteredMovies(allFilteredArray);
+      // mapping through that filtered array to give it a ranking (based on index since this array is still sorted by revenue descending and not randomized yet (also added property to use for filtering))
+      const filteredAddedMovies = allFilteredArray.map((movie, index) => {
+        let ranking = index + 1;
+        setRank(ranking);
+        if (userTitleArray.includes(movie.original_title)) {
+          let added = true;
+          return {...movie, added: added, ranking: ranking};
+        }
+        return {...movie, ranking: ranking};
+      })
+
+      const copyFilteredAddedMovies = [...filteredAddedMovies];
+
+      // adding filter to our array to only return movies that the user chose to submit for comparison of actual ranking in terms of revenue
+      listedPositions = filteredAddedMovies.filter((movie) => {
+        // making sure to also set the state of the movie year inside this array, for when only the movie positions state gets passed as an argument when calling the async function in the event handlers (showlist)
+        setMovieYear(movie.year);
+        return movie.added === true;
+      })
+
+      // updating the movie positions state with the newly mapped array containing our ranking property (not randomized yet) and added property
+      setMoviePositions(listedPositions);
+
+      // randomizing the order of movies (copy of the mapped array) displayed onto the page since the data is sorted by revenue descending, so it would be too much of a giveaway to not have the order randomized (still need the sorted by revenue param for displaying the actual positions)
+      const randomizedMovies = copyFilteredAddedMovies.sort(() => 0.5 - Math.random());
+      randomMovies = randomizedMovies;
+      setAllFilteredMovies(randomizedMovies);
+
 
       // if the length of our array that contains all filtered array values is greater than or equal to 10, break the while loop (since we only want to keep adding new results to our page/API call when there is less than 10 movies available on a page, default page is 1, but this page doesn't always have enough movies that match our filtering conditions, user needs to have at least 10 movies for the prediction list)
-      if (allFilteredArray.length >= 20) {
+      if (randomMovies.length >= 20) {
         break;
         // set counter back to default value 0 after while loop is done
-        
       }
     } 
-    if (allFilteredArray.length > 20) {
-      allFilteredArray.length = 20;
+    if (randomMovies.length > 20) {
+      randomMovies.length = 20;
     }
     counter = 0;
 
@@ -239,7 +295,7 @@ function App() {
     // pushing the new rating property of each object from our database into a new array to then use later on to compare whether the array includes undefined values and duplicate values from the user input
     ratingArray.push(userMovies[i].rating);
     addCounter = addCounter + 1;
-
+    
     userTitleArray.push(userMovies[i].userMovieTitle);
   }
 
@@ -335,7 +391,6 @@ function App() {
     clickedIdsHashMap.delete(userMovieId);
   }
 
-
   useEffect(() => {
     const database = getDatabase(app);
     // giving our database a reference under predictions (a bit more structured)
@@ -346,19 +401,20 @@ function App() {
     onValue( predictionRef, (response) => {
       const data = response.val();
       const newState = [];
-
+      // array for user movie titles to then store into state
+ 
       for(let key in data){
         newState.push({key, ...data[key]});
-        console.log(data[key].rating);
       }
-      // using the sort method to get the data from firebase sorted based on the rating (user input) from the user for each movie (so 1 to 10, instead of default order depending on what movie the user added first)   
+      // using the sort method to get the data from firebase sorted based on the rating (user input) from the user for each movie (so 1 to 10, instead of default order depending on what movie the user added first)
       newState.sort((a,b) => a.rating - b.rating);
       // update the userMovies state with the array containing our data (also sorted now)
       setUserMovies(newState);
-      
     })
   }, [movieYear])
+  
 
+  
 
   // handles input change, setting the userSearch state equal to the value of the targeted input
   const handleSearchInput = (event) => {
@@ -432,24 +488,7 @@ function App() {
   }
 
 
-   // submit handler for search form
-   const handleSearchSubmit = (event) => {
-    event.preventDefault();
-    setListSubmit(false);
-    // calling the async function getMovies with the API call, so that movies only show up once the user searches for a year
-    getMovies();
-    
-    // setting userSubmit to true since the user is submitting the form (using that as a condition later in the return/JSX)
-    setSearchSubmit(true);
-    
-    if (submitted) {
-      setLimitClick(true);
-    }
-    setLimitClick(false);
-
-    // setting the all filtered movies array back to an empty array, so that same movies won't be shown again for next search
-    setAllFilteredMovies([]);
-  }
+  
 
   
   // delete click handler with confirm window
@@ -482,7 +521,6 @@ function App() {
     }
   }
 
-  const [showClicked, setShowClicked] = useState(false);
 
   // click handler for show list button inside search form component for when user has added at least 1 movie to his list (or ten) and hasn't submitted his list yet
   const handleShowList = () => {
@@ -490,12 +528,20 @@ function App() {
     setClicked(true);
     setSearchSubmit(true);
     setShowClicked(false);
+    // only calling async function again with the moviePositions state when a list was submitted for that year (to avoid unnessecary rerendering)
+    if (userMovies[10]) {
+      // calling the async function getMovies only with the moviePositions state as an argument to avoid rerender of filtered movies array state (with the posters)
+      getMovies(moviePositions);
+    }
+    
   }
 
   // click handler for when user has submitted and he chooses to see the list (right upon submission)
   const handleShowSubmitted = () => {
     setClicked(true);
     setShowClicked(true);
+    // calling the async function getMovies only with the moviePositions state as an argument to avoid rerender of filtered movies array state (with the posters)
+    getMovies(moviePositions);
   }
 
 
@@ -555,6 +601,9 @@ function App() {
           deleted={deleted}
           submitAttempt={submitAttempt}
           ratedList={ratedList}
+          showClicked={showClicked}
+          moviePositions={moviePositions}
+          movieYear={movieYear}
         />
         : showClicked ?
         <>
@@ -571,7 +620,14 @@ function App() {
             submitAttempt={submitAttempt}
             ratedList={ratedList}
             showClicked={showClicked}
+            rank={rank}
+            moviePositions={moviePositions}
+            listedPositions={listedPositions}
+            movieYear={movieYear}
           />
+          {/* <MoviePositions
+            moviePositions={moviePositions}
+          /> */}
           <div className="wrapper">
             <p>Now what? Go up to the search bar and try your luck with a different year!</p>
           </div>
@@ -583,6 +639,7 @@ function App() {
         : listSubmit && ratedList.every((e, i, a) => a.indexOf(e) === i) === true && userRating !== "" && !ratedList.includes(undefined) && searchSubmit === false ? 
           <ListSubmission 
           handleShowSubmitted={handleShowSubmitted}
+          movieYear={movieYear}
           />
           : null
        }

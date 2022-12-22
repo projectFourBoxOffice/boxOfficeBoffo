@@ -1,16 +1,24 @@
 // PredictionList component
 
-const PredictionList = ({userMovies, faultySubmit, deleted, handleRemoveClick, listSubmit, handleConfirm, handleListSubmit, handleMovieRating, submitAttempt, ratedList, showClicked}) => {
+const PredictionList = ({userMovies, faultySubmit, deleted, handleRemoveClick, listSubmit, handleConfirm, handleListSubmit, handleMovieRating, submitAttempt, ratedList, moviePositions, showClicked, movieYear}) => {
 
     return(
         <section className="predictionList" id="list">
-            <div className="wrapper">
+            <div className={`${userMovies[10] === undefined ? "wrapper" : "wrapper submitted"}`}>
+            {
+            showClicked ?
+            <p>Your List for {movieYear}</p>
+            : null
+            } 
+              <div className="listFlex">
+                <ul className={`${userMovies[10] === undefined ? "predictionList" : "submittedList"}`}>
             {
             userMovies[10] ?
-            <p>Your Results</p>
+            <div className="listHeading">
+                <p>Your Predictions</p>
+            </div>
             : null
             }
-            <ul className={`${userMovies[10] === undefined ? "predictionList" : "submittedList"}`}> 
             {userMovies.map((movieObj) => {
                 return(
                 // only showing values that are not undefined (if the user has submitted something, the movie rating inside that particular 10th object dedicated to the submitted property would be empty, else we still want the undefined values to show up since the user hasn't even chosen his value yet)
@@ -58,7 +66,7 @@ const PredictionList = ({userMovies, faultySubmit, deleted, handleRemoveClick, l
                     onClick={() => handleRemoveClick(movieObj.key, movieObj.userMovieId, movieObj.userMovieTitle)}
                     className="removeButton"
                     >Remove</button>
-                    : null  
+                    : null
                     }
                 </li>
                 )
@@ -103,8 +111,21 @@ const PredictionList = ({userMovies, faultySubmit, deleted, handleRemoveClick, l
                 : null
                 }
             </div>
-            : null
+            : 
+            <ul className="submittedList">
+              <p>Actual positions</p>
+              {moviePositions.map((movie, index) => {
+               return(
+                <li key={movie.id + index}>
+                  <p>{movie.ranking}</p>
+                  <p>{movie.original_title}</p>
+                </li>
+                )
+                })}
+            </ul>
             }
+                </div>
+            
             {
             showClicked !== true ?
             <a
