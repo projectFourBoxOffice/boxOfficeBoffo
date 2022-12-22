@@ -165,30 +165,51 @@ a:focus {
  align-items: center;
 }
 
-ul.submittedList li {
+.submitted ul.submittedList li {
   justify-content: flex-start;
+  align-items: center;
+  height: 200px;
   padding: 0;
-  margin: 0;
-}
-
-ul.submittedList li p:last-child {
   margin: 0;
   width: 100%;
 }
 
-ul.submittedList p:first-child {
-  margin-left: 130px;
+.submitted .submittedList {
+  width: calc((100% / 2) - 10px);
+  padding: 0;
 }
+
+ul.submittedList li p:last-child {
+=======
+  align-items: center;
+  height: 200px;
+  padding: 0;
+>>>>>>> stretch-goal/rating-position
+  margin: 0;
+}
+
+
+ul.submittedList li p:last-child {
+  margin: 0;
+}
+
 
 ul.submittedList .textContainer {
   width: fit-content;
-  margin-left: 50px;
+  margin: 0 10%;
+}
+
+ul .textContainer {
+  margin: 0;
+  width: 60%;
+  display: flex;
+  align-items: center;
 }
 
 .predictionList li {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   width: calc(100% / 2);
   height: 180px;
 }
@@ -201,7 +222,50 @@ ul.submittedList .textContainer {
   margin-right: 10px;
 }
 
-select, .predictionList p {
+.submitted {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.submitted .listHeading {
+  align-self: center;
+  margin: 0 auto;
+}
+
+.submitted .listHeading p:first-child,
+.submitted .listHeading p:nth-child(2) {
+  margin-left: 0;
+}
+
+.submitted ul.ranking li {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.submitted ul.ranking .textContainer {
+  align-items: center;
+}
+
+.topTen {
+  margin-right: 2%;
+  display: flex;
+  align-items: center;
+}
+
+
+
+.submitted .listFlex {
+  display: flex;
+  justify-content: space-between;
+}
+
+select {
+  margin-right: 50px;
+  margin-left: 50px;
+}
+.predictionList li p {
+  margin-left: 20px;
   margin-right: 20px;
 }
 
@@ -222,6 +286,7 @@ footer {
 
 .removeButton {
   margin-bottom: 0px;
+  margin-right: 30px;
 }
 
 .searchBar {
@@ -294,6 +359,13 @@ img {
   }
   .titleContainer {
     margin: 30px 25px 5px;
+    height: 85px;
+  }
+}
+
+@media (max-width: 1010px) {
+  .titleContainer {
+    height: 110px;
   }
 }
 
@@ -325,14 +397,25 @@ img {
   .buttonContainer button {
     width: calc(25% - 10px);
   }
-  ul.submittedList .textContainer,
-  ul.submittedList p:first-child {
+  ul.submittedList li p:first-child {
     margin-left: 0;
-    margin-right: 0;
   }
   ul.submittedList li {
     justify-content: center;
     flex-direction: column;
+  }
+  ul.submittedList .textContainer:first-child {
+    padding-top: 50px;
+  }
+  .topTen {
+    margin-right: 0;
+    height: 100%;
+  }
+}
+
+@media (max-width: 602px) {
+  .titleContainer {
+    height: 130px;
   }
 }
 
@@ -340,12 +423,22 @@ img {
   .buttonContainer button {
     width: calc(30% - 10px);
   }
-  .predictionList p,
+  .predictionList li p,
   select {
-    margin-right: 50px;
+    margin-right: 20px;
+  }
+  .submittedList p {
+    margin-right: 0;
+  }
+  ul.submittedList li .textContainer:first-child,
+  ul.submittedList li .textContainer:nth-child(2) {
+    flex-direction: column;
+    flex-wrap: wrap;
   }
   .predictionList .textContainer {
     width: 30%;
+    flex-direction: column;
+    flex-wrap: wrap;
   }
   .movieResults li {
     width: 100%;
@@ -355,6 +448,9 @@ img {
   }
   .noMovies {
     margin-top: 80%;
+  }
+  .titleContainer {
+    height: 80px;
   }
 }
 
@@ -382,14 +478,21 @@ img {
   }
   .predictionList li{
     flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
     height: 250px;
   }
   .predictionList p,
-  select {
+  select,
+  .removeButton {
     margin-right: 0px;
+    margin-left: 0;
   }
   .buttonContainer button{
     width: calc(40% - 10px);
+  }
+  .topTen {
+    height: unset;
   }
 }
 
@@ -421,6 +524,10 @@ img {
   .noMovies {
     margin-top: 90%;
   }
+  .submitted ul.submittedList li {
+    height: 250px;
+  }
+  
 }
 
 @media (max-width: 350px){
@@ -434,4 +541,14 @@ img {
   .noMovies {
     margin-top: 100%;
   }
+  .submitted ul.submittedList li {
+    height: 350px;
+  }
+  .submitted div.listHeading:nth-child(2) {
+    margin-bottom: 30px;
+  }
+  .submitted ul.ranking {
+    margin-top: 20px;
+  }
+ 
 }

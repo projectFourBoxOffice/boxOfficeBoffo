@@ -1,7 +1,7 @@
 // Search Form component for search bar
 
 // Passing in the values stored inside submit handler, change handler and userSearch state (with user input value) as props and destructuring them
-const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYear, searchSubmit, loading, listSubmit, userMovies, handleShowList, searchError}) => {
+const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYear, searchSubmit, loading, listSubmit, userMovies, handleShowList, searchError, allFilteredMovies}) => {
 
     return(
         <div className="wrapper">
@@ -21,18 +21,20 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                         value={userSearch}
                         required
                     />
-                    <button className="searchText" type="submit" aria-label="Click this button to start searching">{loading ? <>Loading..</> : <>Search</>}</button>
+                    <button className="searchText" type="submit" aria-label="Click this button to start searching">{searchSubmit && allFilteredMovies.length === 0 ? <>Loading..</> : loading ? <>Loading..</> : <>Search</>}</button>
                 </div>
                 {
-                    searchSubmit ?
+                    searchSubmit && allFilteredMovies.length !== 0 ?
                     <p>You searched for summer movies from the year {movieYear}.</p>
+                    : searchSubmit && allFilteredMovies.length === 0 ?
+                    <p>You are searching for summer movies from the year {movieYear}.</p>
                     // error message in case something goes wrong with API
                     : searchError ?
                     <p>Sorry, something went wrong.</p>
                     : null
                 }
                 {
-                    userMovies.length === 10 && listSubmit === false && searchSubmit ?
+                    userMovies.length === 10 && listSubmit === false && searchSubmit && allFilteredMovies.length !== 0 ?
                     <div className="userNotification">
                         <p>You already added 10 items to your list, but haven't submitted yet.</p>
                         <a 
@@ -41,7 +43,7 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                         className="searchText"
                        >Show List</a> 
                     </div>
-                    : userMovies.length < 10 && listSubmit === false && searchSubmit && userMovies.length !== 0 ?
+                    : userMovies.length < 10 && listSubmit === false && searchSubmit && userMovies.length !== 0 && allFilteredMovies.length !== 0 ?
                     <div className="userNotification">
                         {userMovies.length > 1 ? 
                         <p>You added {userMovies.length} items to your list, but haven't submitted yet.</p>
@@ -53,7 +55,7 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                         className="searchText"
                        >Show List</a> 
                     </div>
-                    : userMovies[10] && listSubmit === false ?
+                    : userMovies[10] && listSubmit === false && allFilteredMovies.length !== 0 ?
                     <div className="userNotification">
                         <p>You already submitted a list for this year.</p>
                         <a
