@@ -5,7 +5,7 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
 
     return(
         <div className="wrapper">
-            <form onSubmit={handleSearchSubmit} id="search">
+            <form onSubmit={handleSearchSubmit} id="search" aria-label="search form">
                 <label htmlFor="userSearch">Search for summer movies between the years 1900 and 2022, add 10 movies to your prediction list that you think were the highest grossing of that year, and then order them from highest grossing (10) to lowest grossing (1). You can only submit one list per year. Have fun!</label>
                 <div className="searchBar">
                     {/* have an input with the type number so that the user can only search for a year */}
@@ -21,11 +21,12 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                         value={userSearch}
                         required
                     />
-                    <button className="searchText" type="submit">{loading ? <>Loading..</> : <>Search</>}</button>
+                    <button className="searchText" type="submit" aria-label="Click this button to start searching">{loading ? <>Loading..</> : <>Search</>}</button>
                 </div>
                 {
                     searchSubmit ?
                     <p>You searched for summer movies from the year {movieYear}.</p>
+                    // error message in case something goes wrong with API
                     : searchError ?
                     <p>Sorry, something went wrong.</p>
                     : null
@@ -34,7 +35,7 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                     userMovies.length === 10 && listSubmit === false && searchSubmit ?
                     <div className="userNotification">
                         <p>You already added 10 items to your list, but haven't submitted yet.</p>
-                       <a 
+                        <a 
                         href="#list" 
                         onClick={handleShowList}
                         className="searchText"
@@ -63,7 +64,6 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                     </div>
                     : null
                 }
-            
             </form>
         </div>
     )

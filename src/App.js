@@ -208,6 +208,9 @@ function App() {
         
       }
     } 
+    if (allFilteredArray.length > 20) {
+      allFilteredArray.length = 20;
+    }
     counter = 0;
 
     if (searchError) {
@@ -300,7 +303,6 @@ function App() {
 
     // set the disabled property of the current targeted event (in this case the currently clicked button by the user) to true in order to only disable one button out of all the add buttons for each movies (that are inside the map function)
     e.currentTarget.disabled = true;
-  
   }
 
   // click handler for remove button (for each single list item)
@@ -386,15 +388,15 @@ function App() {
   const handleListSubmit = (userMovies) => {
     // storing the array containing the input values of each dropdown in a state array in order to use it as a prop in the prediction list component (for conditions, other states here for invalid input and repetition were behind by one number, so displayed messages weren't accurate)
     setRatedList(ratingArray);
+
+    // updating the states that we will use as conditions to determine whether to show the prediction list or not (or the submit message)
+    setSubmitAttempt(true);
+    
     // checking if there are undefined or empty values inside rating array to determine whether submission is valid or not
 
     // using every and indexOf method to determine whether there are no duplicates inside the array (iterative)
     // every takes in an anonymous function with the current value asa required parameter, as well as the index of the current element and the array of that element as optional parameters, that returns the first index of the current value inside the array (in our case the ratingArray with the user input from the dropdown) and checks whether that first index of the current value is the same as the index(or indices) of that value (if the first index is not the same as the other index/indices, that means that the same value is also positioned at another index, which means it is duplicated)
     // only true if all elements passed the test (ie. no element repeats itself (true); if at least one repeats itself, then it returns false)
-
-    setSubmitAttempt(true);
-    
-    // updating the states that we will use as conditions to determine whether to show the prediction list or not (or the submit message)
     if (userMovies.length === 10 && ratingArray.every((element, index, array) => array.indexOf(element) === index) === true && !ratingArray.includes(undefined) && ratingArray.length === 10){
       setListSubmit(true);
       setSearchSubmit(false);
@@ -492,23 +494,30 @@ function App() {
 
   return (
     <div className="App">
+      {/* skip link to main*/}
+      <a href="#mainContent" className="skipLink">
+        Skip to main content
+      </a>
+      {/* header component */}
       <Header/>
-      {/* form for the user to search for movies matching a release year */}
-      <SearchForm 
-        handleSearchSubmit={handleSearchSubmit}
-        handleSearchInput={handleSearchInput}
-        userSearch={userSearch}
-        movieYear={movieYear}
-        searchSubmit={searchSubmit}
-        loading={loading}
-        listSubmit={listSubmit}
-        userMovies={userMovies}
-        handleShowList={handleShowList}
-        searchError={searchError}
-      />
+      {/* main sections with components */}
+      <main id="mainContent">
+        {/* form for the user to search for movies matching a release year */}
+        <SearchForm 
+         handleSearchSubmit={handleSearchSubmit}
+         handleSearchInput={handleSearchInput}
+         userSearch={userSearch}
+         movieYear={movieYear}
+         searchSubmit={searchSubmit}
+         loading={loading}
+         listSubmit={listSubmit}
+         userMovies={userMovies}
+         handleShowList={handleShowList}
+         searchError={searchError}
+       />
 
-      {/* only show the list of movie images and titles when the user has submitted the form */}
-      {
+       {/* only show the list of movie images and titles when the user has submitted the form */}
+       {
         searchSubmit && listSubmit === false ?
         <DisplayMovies 
           allFilteredMovies={allFilteredMovies}
@@ -523,9 +532,9 @@ function App() {
           listSubmit={listSubmit}
         />
         : null
-      }
-      {/* only showing the list if either a corresponding button has been clicked and a year has been searched for and only when the user hasn't submitted a list for that year yet (only show results when the user has submitted, so mapping through the object again but instead of the dropdown just numbers) */}
-      {
+       }
+       {/* only showing the list if either a corresponding button has been clicked and a year has been searched for and only when the user hasn't submitted a list for that year yet (only show results when the user has submitted, so mapping through the object again but instead of the dropdown just numbers) */}
+       {
         clicked && listSubmit === false ? 
         <PredictionList 
           userMovies={userMovies}
@@ -556,7 +565,9 @@ function App() {
             ratedList={ratedList}
             showClicked={showClicked}
           />
-          <p>Now what? Go up to the search bar and try your luck with a different year!</p>
+          <div className="wrapper">
+            <p>Now what? Go up to the search bar and try your luck with a different year!</p>
+          </div>
           <a
             className="searchText"
             href="#search"
@@ -567,8 +578,9 @@ function App() {
           handleShowSubmitted={handleShowSubmitted}
           />
           : null
-      }
-
+       }
+      </main>
+      {/* footer component */}
       <Footer 
        allFilteredMovies={allFilteredMovies}
        listSubmit={listSubmit}

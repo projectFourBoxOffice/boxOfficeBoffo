@@ -21,16 +21,18 @@ const PredictionList = ({userMovies, faultySubmit, deleted, handleRemoveClick, l
                     {/* still have to add an onChange and a value set to the user selection of the number input  */}
                     {
                     userMovies[10] === undefined ?
-                    <select 
-                    name="selectedList" 
-                    id="selectedList" 
-                    required
-                    // setting the value of the select equal to the rating values from our database object (user input), so that user input still stays on the page even when user goes to a different year without having submitted his list for that year prior OR the default value (since if we define another defaultValue attribute with the value of default, the console will show an error because it only accepts one value attribute inside a select tag (but we still want to have the disabled option without a number as the default option that is automatically selected so that we can listen properly for when the user changes the value of the dropdown (1 won't get pushed into our database if it's already selected by default and the user won't know)))
-                    value={movieObj.rating || "default"}
-                    onChange={e => handleMovieRating(e, movieObj.key)}
-                    // comparing user rating (input value which would also include the default value) vs the rating property from our database object (which doesn't include that default value, only values from 1 to 10)
-                    className={`${movieObj.rating === undefined || movieObj.rating === "" ? "" : "selectedNumber" }`}
-                    >
+                    <>
+                     <label htmlFor="selectedList" className="sr-only">Choose a number for this movie</label>
+                     <select 
+                     name="selectedList" 
+                     id="selectedList" 
+                     required
+                     // setting the value of the select equal to the rating values from our database object (user input), so that user input still stays on the page even when user goes to a different year without having submitted his list for that year prior OR the default value (since if we define another defaultValue attribute with the value of default, the console will show an error because it only accepts one value attribute inside a select tag (but we still want to have the disabled option without a number as the default option that is automatically selected so that we can listen properly for when the user changes the value of the dropdown (1 won't get pushed into our database if it's already selected by default and the user won't know)))
+                     value={movieObj.rating || "default"}
+                     onChange={e => handleMovieRating(e, movieObj.key)}
+                     // comparing user rating (input value which would also include the default value) vs the rating property from our database object (which doesn't include that default value, only values from 1 to 10)
+                     className={`${movieObj.rating === undefined || movieObj.rating === "" ? "" : "selectedNumber" }`}
+                     >
                         <option value={"default"} disabled>Pick a number</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -42,7 +44,8 @@ const PredictionList = ({userMovies, faultySubmit, deleted, handleRemoveClick, l
                         <option value="8">8</option>
                         <option value="9">9</option>
                         <option value="10">10</option>
-                    </select>
+                     </select>
+                    </>
                     : ratedList.find(item => item === undefined) === movieObj.rating ? "" :
                     <p>{movieObj.rating}</p>
                     }

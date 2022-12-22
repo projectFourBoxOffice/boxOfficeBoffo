@@ -6,7 +6,7 @@ import MoviePlaceholder from './movie_default.png';
 const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, userMovies, deleted, loading, dataCounter, listSubmit}) => {
 
     return(
-        <section className='movieResults'>
+        <section className="movieResults">
             <div className="wrapper">
               <p>Total results: {allFilteredMovies.length}</p>
               <ul>
@@ -39,8 +39,10 @@ const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, userMovies, 
                                 onClick={handleClick}
                                 // Using the dataCounter state or the array length of our userMovies state array to check whether 10 movies have been added or not (still able to access that information even after going to a different year and then coming back to that year again without having submitted) or whether the list for that particular year has already been submitted (just added in a submitted property every time the user submits successfully, so that 10th index is only truthy upon submission, like this we can disable buttons for only those years)
                                 disabled={dataCounter === 10 || userMovies.length === 10 || userMovies[10] ? true : limitClick}
+                                // giving the buttons that are disabled a className in order to set cursor property back to default (have to specify that deleted is false)
+                                className={`${dataCounter === 10 || userMovies.length === 10 || userMovies[10] || limitClick ? "weaker" : deleted === false && movie.added === true ? "weaker" : ""}`}
                             >
-                            {movie.added === true && userMovies.length < 10 ? 
+                            {movie.added === true && userMovies.length < 10 && deleted === false ? 
                                 <>Added</> 
                                 : userMovies.length === 10 && deleted === false && listSubmit === false ?
                                 <>Added 10 items to the list</>

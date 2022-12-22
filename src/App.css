@@ -25,13 +25,21 @@ html {
   width: 90%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* SKIP LINK to MAIN CONTENT, only visible for screen readers when hitting tab */
+.skipLink {
+  position: absolute;
+  left: -1000px;
+  z-index: 10;
+  background: #fff;
+  color: black;
+  font-size: 1rem;
+  padding: 10px 0;
+}
+.skipLink:focus {
+  left: 0;
+  right: 0;
+  text-align: center;
+  top: 0px;
 }
 
 ul {
@@ -103,6 +111,23 @@ button,
   border-radius: 5px;
 }
 
+button:hover,
+.searchText:hover,
+button:focus,
+.searchText:focus {
+  background-color: #beb80b;
+}
+
+/* class for when button is disabled */
+.weaker,
+.weaker:hover,
+.weaker:focus  {
+  cursor: default;
+  background-color: rgba(237, 231, 73, 0.9);
+  color: rgba(7, 7, 7, 0.742);
+}
+
+
 .userNotification a {
   margin-top: 20px;
   font-weight: 600;
@@ -124,7 +149,8 @@ label {
   border-radius: 20px;
 }
 
-a:hover {
+a:hover,
+a:focus {
   font-weight:bolder;
 }
 
