@@ -79,6 +79,8 @@ function App() {
   // will get values of the results array from our object
   // will get the our new array (copied results array) with new month, day_of_month and year properties to use as filtering conditions
 
+  // need to include this state to store the unfiltered data.results array from API
+  const [movies, setMovies] = useState([]);
   // state for the filtered movies array, to only show movies released between May 1st and Sept 4 (inclusive), and possibly only movies with the original language equal to English (in order to avoid possible mishaps with the include_adult param)
   const [allFilteredMovies, setAllFilteredMovies] = useState([]);
 
@@ -112,6 +114,9 @@ function App() {
   const [submitted, setSubmitted] = useState("");
   const [dataCounter, setDataCounter] = useState(0);
 
+  // error state
+  const [searchError, setSearchError] = useState(false);
+
   // let variables to use for the while loop
   // counter for page param, default value 0 (gets increased in the while loop)
   let counter = 0;
@@ -121,7 +126,7 @@ function App() {
 
   // async function getMovies to make the API call (calling that function in the submit handler)
   const getMovies = async () => {
-    
+    try {
     // using the discover/movie endpoint in order to get the movie data with the year property and without the required query param (in the movie/search endpoint the query param would be a requirement which we don't want in our case, the user is looking for movie titles based on the release_year and not the other way around)
     setLoading(true);
 
@@ -151,6 +156,7 @@ function App() {
       const data = await response.json();
 
       const movieResults = data.results;
+      setMovies(movieResults);
 
       // setting loading to false once API data is received
       setLoading(false);
@@ -203,6 +209,14 @@ function App() {
       }
     } 
     counter = 0;
+
+    if (searchError) {
+      setSearchError(false);
+    }
+   }
+   catch (error) {
+    setSearchError(true);
+   }
   }
  
 
@@ -490,6 +504,7 @@ function App() {
         listSubmit={listSubmit}
         userMovies={userMovies}
         handleShowList={handleShowList}
+        searchError={searchError}
       />
 
       {/* only show the list of movie images and titles when the user has submitted the form */}
@@ -497,6 +512,7 @@ function App() {
         searchSubmit && listSubmit === false ?
         <DisplayMovies 
           allFilteredMovies={allFilteredMovies}
+          movies={movies}
           handleClick={handleClick}
           limitClick={limitClick}
           handleRemoveClick={handleRemoveClick}
