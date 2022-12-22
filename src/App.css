@@ -186,11 +186,13 @@ ul.submittedList li p:last-child {
 
 ul.submittedList p:first-child {
   margin-left: 55px;
+  margin-right: 0;
 }
+
 
 ul.submittedList .textContainer {
   width: fit-content;
-  margin-left: 50px;
+  margin: 0 10%;
 }
 
 .predictionList li {
@@ -217,6 +219,12 @@ ul.submittedList .textContainer {
 
 .submitted .listHeading {
   align-self: center;
+  margin: 0 auto;
+}
+
+.submitted .listHeading p:first-child,
+.submitted .listHeading p:nth-child(2) {
+  margin-left: 0;
 }
 
 
@@ -356,8 +364,7 @@ img {
   .buttonContainer button {
     width: calc(25% - 10px);
   }
-  ul.submittedList .textContainer,
-  ul.submittedList p:first-child {
+  ul.submittedList li p:first-child {
     margin-left: 0;
   }
   ul.submittedList li {

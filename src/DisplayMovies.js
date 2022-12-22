@@ -41,7 +41,7 @@ const DisplayMovies = ({allFilteredMovies, handleClick, limitClick, userMovies, 
                                 value={movie.original_title}
                                 // Give the button an id with the value of the matching movie id to the movie title (can then use e.target.id in the click handler to have more useful data in the database)
                                 id={movie.id}
-                                onClick={handleClick}
+                                onClick={e => handleClick(e, movie.ranking)}
                                 // Using the dataCounter state or the array length of our userMovies state array to check whether 10 movies have been added or not (still able to access that information even after going to a different year and then coming back to that year again without having submitted) or whether the list for that particular year has already been submitted (just added in a submitted property every time the user submits successfully, so that 10th index is only truthy upon submission, like this we can disable buttons for only those years)
                                 disabled={dataCounter === 10 || userMovies.length === 10 || userMovies[10] ? true : userTitleArray.includes(movie.original_title) && userMovies.length < 10 && deleted === false ? true : limitClick}
                                 // giving the buttons that are disabled a className in order to set cursor property back to default (have to specify that deleted is false)

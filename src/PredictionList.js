@@ -113,12 +113,16 @@ const PredictionList = ({userMovies, faultySubmit, deleted, handleRemoveClick, l
             </div>
             : 
             <ul className="submittedList">
-              <p>Actual positions</p>
+                <div className="listHeading">
+                    <p>Actual positions</p>
+                </div>
               {moviePositions.map((movie, index) => {
                return(
                 <li key={movie.id + index}>
                   <p>{movie.ranking}</p>
-                  <p>{movie.original_title}</p>
+                  <div className="textContainer">
+                    <p>{movie.original_title}</p>
+                  </div>
                 </li>
                 )
                 })}

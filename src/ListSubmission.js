@@ -5,7 +5,7 @@ const ListSubmission = ( {handleShowSubmitted, movieYear} ) => {
         
         <div className="userNotification">
             <div className="wrapper">
-              <p>Your List For The Year {movieYear} Has Been Submitted</p>
+              <p>Your list for the year {movieYear} has been submitted successfully!</p>
               <a
               onClick={handleShowSubmitted}
               className="searchText"

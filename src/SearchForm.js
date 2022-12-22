@@ -21,7 +21,7 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                         value={userSearch}
                         required
                     />
-                    <button className="searchText" type="submit" aria-label="Click this button to start searching">{searchSubmit && allFilteredMovies.length === 0 ? <>Loading..</> : <>Search</>}</button>
+                    <button className="searchText" type="submit" aria-label="Click this button to start searching">{searchSubmit && allFilteredMovies.length === 0 ? <>Loading..</> : loading ? <>Loading..</> : <>Search</>}</button>
                 </div>
                 {
                     searchSubmit && allFilteredMovies.length !== 0 ?
@@ -34,7 +34,7 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                     : null
                 }
                 {
-                    userMovies.length === 10 && listSubmit === false && searchSubmit ?
+                    userMovies.length === 10 && listSubmit === false && searchSubmit && allFilteredMovies.length !== 0 ?
                     <div className="userNotification">
                         <p>You already added 10 items to your list, but haven't submitted yet.</p>
                         <a 
@@ -43,7 +43,7 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                         className="searchText"
                        >Show List</a> 
                     </div>
-                    : userMovies.length < 10 && listSubmit === false && searchSubmit && userMovies.length !== 0 ?
+                    : userMovies.length < 10 && listSubmit === false && searchSubmit && userMovies.length !== 0 && allFilteredMovies.length !== 0 ?
                     <div className="userNotification">
                         {userMovies.length > 1 ? 
                         <p>You added {userMovies.length} items to your list, but haven't submitted yet.</p>
@@ -55,7 +55,7 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
                         className="searchText"
                        >Show List</a> 
                     </div>
-                    : userMovies[10] && listSubmit === false ?
+                    : userMovies[10] && listSubmit === false && allFilteredMovies.length !== 0 ?
                     <div className="userNotification">
                         <p>You already submitted a list for this year.</p>
                         <a
