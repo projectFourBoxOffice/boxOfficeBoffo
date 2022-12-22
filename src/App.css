@@ -339,7 +339,7 @@ img {
   }
   .predictionList p,
   select {
-    margin-right: 10px;
+    margin-right: 0px;
   }
   .predictionList .textContainer {
     width: 30%;

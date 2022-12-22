@@ -339,7 +339,7 @@ function App() {
   useEffect(() => {
     const database = getDatabase(app);
     // giving our database a reference under predictions (a bit more structured)
-    // nesting our soon to be declared object (click handler) inside a collection called Predictions that contains collections of the data invoked by the user per movieYear (adding in the movie info under the specific/matching year with the reference path
+    // nesting our soon to be declared object (click handler) inside a collection called Predictions that contains collections of the data invoked by the user per movieYear (adding in the movie info under the specific/matching year with the reference path)
     // like this we already got the data sorted into different collections based on the year
     const predictionRef = ref(database, `Predictions/${movieYear}/movies`);
     
@@ -349,8 +349,11 @@ function App() {
 
       for(let key in data){
         newState.push({key, ...data[key]});
-      }   
-      
+        console.log(data[key].rating);
+      }
+      // using the sort method to get the data from firebase sorted based on the rating (user input) from the user for each movie (so 1 to 10, instead of default order depending on what movie the user added first)   
+      newState.sort((a,b) => a.rating - b.rating);
+      // update the userMovies state with the array containing our data (also sorted now)
       setUserMovies(newState);
       
     })
