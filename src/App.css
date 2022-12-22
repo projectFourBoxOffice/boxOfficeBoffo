@@ -180,11 +180,6 @@ a:focus {
 }
 
 ul.submittedList li p:last-child {
-=======
-  align-items: center;
-  height: 200px;
-  padding: 0;
->>>>>>> stretch-goal/rating-position
   margin: 0;
 }
 
