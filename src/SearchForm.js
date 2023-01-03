@@ -6,7 +6,7 @@ const SearchForm = ({handleSearchSubmit, userSearch, handleSearchInput, movieYea
     return(
         <div className="wrapper">
             <form onSubmit={handleSearchSubmit} id="search" aria-label="search form">
-                <label htmlFor="userSearch">Search for summer movies between the years 1900 and 2022, add 10 movies to your prediction list that you think were the highest grossing of that year, and then order them from highest grossing (10) to lowest grossing (1). You can only submit one list per year. Have fun!</label>
+                <label htmlFor="userSearch">Search for summer movies between the years 1900 and 2022, add 10 movies to your prediction list that you think were the highest grossing of that year, and then order them from highest grossing (1) to lowest grossing (10). You can only submit one list per year. Have fun!</label>
                 <div className="searchBar">
                     {/* have an input with the type number so that the user can only search for a year */}
                     <input 
